@@ -23,14 +23,8 @@ router.post("/login", async (req, res) => {
     // Find admin by email
     // Mongoose requires .select("+password") since password has select: false,
     // but in local JSON fallback, we select it automatically or handle it.
-    let admin;
-    const isLocalDB = require("../config/db").isLocal();
-    
-    if (isLocalDB) {
-      admin = await Admin.findOne({ email: email.toLowerCase() });
-    } else {
-      admin = await Admin.findOne({ email: email.toLowerCase() }).select("+password");
-    }
+    // Find admin by email using unified proxy interface
+    const admin = await Admin.findOne({ email: email.toLowerCase() }).select("+password");
 
     if (!admin) {
       return res.status(401).json({ message: "Invalid email or password." });
