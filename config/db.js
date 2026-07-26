@@ -3,6 +3,9 @@ const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 
+// Disable Mongoose command buffering so queries fail fast if disconnected
+mongoose.set("bufferCommands", false);
+
 let useLocalFiles = false;
 
 async function connectDB() {
@@ -86,8 +89,16 @@ class LocalQuery {
   constructor(data) {
     this.data = data;
   }
+  select(fields) {
+    return this;
+  }
   sort(sortOption) {
-    // Simplistic sorting
+    return this;
+  }
+  limit(n) {
+    if (Array.isArray(this.data)) {
+      this.data = this.data.slice(0, n);
+    }
     return this;
   }
   async exec() {
@@ -104,7 +115,7 @@ class LocalModel {
     this.filename = filename;
   }
 
-  async find(query = {}) {
+  find(query = {}) {
     const items = readJSONFile(this.filename);
     const filtered = items.filter(item => {
       for (let key in query) {
@@ -114,10 +125,10 @@ class LocalModel {
       }
       return true;
     });
-    return filtered;
+    return new LocalQuery(filtered);
   }
 
-  async findOne(query = {}) {
+  findOne(query = {}) {
     const items = readJSONFile(this.filename);
     const found = items.find(item => {
       for (let key in query) {
@@ -127,16 +138,16 @@ class LocalModel {
       }
       return true;
     });
-    if (!found) return null;
-    return this._attachMethods(found);
+    if (!found) return new LocalQuery(null);
+    return new LocalQuery(this._attachMethods(found));
   }
 
-  async findById(id) {
+  findById(id) {
     const items = readJSONFile(this.filename);
     const idStr = id ? id.toString() : "";
     const found = items.find(item => item._id === idStr);
-    if (!found) return null;
-    return this._attachMethods(found);
+    if (!found) return new LocalQuery(null);
+    return new LocalQuery(this._attachMethods(found));
   }
 
   async create(data) {
@@ -158,11 +169,11 @@ class LocalModel {
     return this._attachMethods(newItem);
   }
 
-  async findByIdAndUpdate(id, updateData, options = {}) {
+  findByIdAndUpdate(id, updateData, options = {}) {
     const items = readJSONFile(this.filename);
     const idStr = id ? id.toString() : "";
     const index = items.findIndex(item => item._id === idStr);
-    if (index === -1) return null;
+    if (index === -1) return new LocalQuery(null);
     
     items[index] = {
       ...items[index],
@@ -170,22 +181,22 @@ class LocalModel {
       updatedAt: new Date().toISOString()
     };
     writeJSONFile(this.filename, items);
-    return this._attachMethods(items[index]);
+    return new LocalQuery(this._attachMethods(items[index]));
   }
 
-  async findByIdAndDelete(id) {
+  findByIdAndDelete(id) {
     const items = readJSONFile(this.filename);
     const idStr = id ? id.toString() : "";
     const index = items.findIndex(item => item._id === idStr);
-    if (index === -1) return null;
+    if (index === -1) return new LocalQuery(null);
     const deleted = items.splice(index, 1)[0];
     writeJSONFile(this.filename, items);
-    return deleted;
+    return new LocalQuery(deleted);
   }
 
   async countDocuments(query = {}) {
-    const items = await this.find(query);
-    return items.length;
+    const queryResult = await this.find(query);
+    return queryResult.length;
   }
 
   _attachMethods(item) {
@@ -210,6 +221,53 @@ function registerModel(name, filename, mongooseModel) {
   };
 }
 
+function wrapPromiseOrQuery(result, name, prop, args) {
+  if (!result || typeof result.then !== "function") {
+    return result;
+  }
+  
+  return new Proxy(result, {
+    get(target, key) {
+      if (key === "then") {
+        return function(onfulfilled, onrejected) {
+          return target.then(onfulfilled).catch(async (err) => {
+            const isConnectionError = 
+              err.name === "MongooseError" || 
+              err.name === "MongoNetworkError" ||
+              err.message.includes("buffering") || 
+              err.message.includes("connection") || 
+              err.message.includes("timed out") ||
+              err.message.includes("Mongo") ||
+              err.message.includes("Topology");
+
+            if (isConnectionError) {
+              console.warn(`Database connection error on ${name}.${prop}: ${err.message}. Switching to local JSON database.`);
+              useLocalFiles = true;
+              const localModel = models[name].localModel;
+              const localValue = localModel[prop];
+              if (typeof localValue === "function") {
+                const localResult = localValue.apply(localModel, args);
+                return wrapPromiseOrQuery(localResult, name, prop, args);
+              }
+            }
+            if (onrejected) return onrejected(err);
+            throw err;
+          });
+        };
+      }
+      
+      const val = target[key];
+      if (typeof val === "function") {
+        return function(...chainArgs) {
+          const chainResult = val.apply(target, chainArgs);
+          return wrapPromiseOrQuery(chainResult, name, prop, args);
+        };
+      }
+      return val;
+    }
+  });
+}
+
 function getModel(name) {
   return new Proxy({}, {
     get(target, prop) {
@@ -225,29 +283,9 @@ function getModel(name) {
       const mongooseModel = models[name].mongooseModel;
       const value = mongooseModel[prop];
       if (typeof value === "function") {
-        return async function(...args) {
-          try {
-            return await value.apply(mongooseModel, args);
-          } catch (err) {
-            const isConnectionError = 
-              err.name === "MongooseError" || 
-              err.name === "MongoNetworkError" ||
-              err.message.includes("buffering") || 
-              err.message.includes("connection") || 
-              err.message.includes("timed out") ||
-              err.message.includes("Mongo");
-
-            if (isConnectionError) {
-              console.warn(`Database connection/buffering error on MenuItem.${prop}: ${err.message}. Switching to local JSON files.`);
-              useLocalFiles = true;
-              const localModel = models[name].localModel;
-              const localValue = localModel[prop];
-              if (typeof localValue === "function") {
-                return await localValue.apply(localModel, args);
-              }
-            }
-            throw err;
-          }
+        return function(...args) {
+          const res = value.apply(mongooseModel, args);
+          return wrapPromiseOrQuery(res, name, prop, args);
         };
       }
       return value;
