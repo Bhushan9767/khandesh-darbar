@@ -1980,9 +1980,12 @@ body{
 
 /* Drawer Body (Items List) */
 .cart-body{
-  flex:1;
-  padding:20px;
-  overflow-y:auto;
+  flex: 1 1 auto;
+  min-height: 180px;
+  max-height: 45vh;
+  padding: 15px 20px;
+  overflow-y: auto;
+  border-bottom: 2px dashed #e0e0e0;
 }
 
 .cart-item{
@@ -2059,7 +2062,7 @@ body{
 .cart-empty-msg{
   text-align:center;
   color:#777;
-  margin-top:50px;
+  margin-top:30px;
 }
 
 .cart-empty-msg i{
@@ -2070,9 +2073,12 @@ body{
 
 /* Drawer Checkout Form */
 .cart-checkout-form{
-  padding:20px;
-  border-top:1px solid #eee;
-  background:var(--cream);
+  flex: 0 1 auto;
+  padding: 15px 20px;
+  overflow-y: auto;
+  max-height: 50vh;
+  border-top: 1px solid #eee;
+  background: var(--cream);
 }
 
 .cart-total-row{

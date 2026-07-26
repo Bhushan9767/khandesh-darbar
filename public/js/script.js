@@ -438,7 +438,7 @@ async function loadMenu(retryCount = 0) {
               </div>
               <p>${item.description}</p>
               <div class="food-info">
-                <span>🟢 ${item.veg ? 'Pure Veg' : 'Non Veg'}</span>
+                <span>🟢 Pure Veg</span>
                 ${tagHtml}
               </div>
               <button class="primary-btn" onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price}, '${item.image}')">Add to Cart</button>
