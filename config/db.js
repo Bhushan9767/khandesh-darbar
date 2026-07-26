@@ -34,11 +34,42 @@ function readJSONFile(filename) {
   const filepath = path.join(DATA_DIR, filename);
   if (!fs.existsSync(filepath)) {
     fs.writeFileSync(filepath, JSON.stringify([]));
-    return [];
   }
   try {
     const data = fs.readFileSync(filepath, "utf8");
-    return JSON.parse(data || "[]");
+    let parsed = JSON.parse(data || "[]");
+
+    // Auto-seed if empty
+    if (parsed.length === 0) {
+      try {
+        const seedData = require("./seedData.json");
+        if (filename === "menu.json") {
+          parsed = seedData.defaultMenuItems.map((item, index) => ({
+            _id: `seed-menu-${index + 1}`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            ...item
+          }));
+          fs.writeFileSync(filepath, JSON.stringify(parsed, null, 2));
+          console.log(`Auto-seeded ${parsed.length} local menu items in '${filename}'.`);
+        } else if (filename === "admins.json") {
+          const defaultAdmin = seedData.defaultAdmin;
+          const hashedPassword = bcrypt.hashSync(defaultAdmin.password, 12);
+          parsed = [{
+            _id: "seed-admin-1",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            ...defaultAdmin,
+            password: hashedPassword
+          }];
+          fs.writeFileSync(filepath, JSON.stringify(parsed, null, 2));
+          console.log(`Auto-seeded local admin credentials in '${filename}'.`);
+        }
+      } catch (err) {
+        console.error("Failed to auto-seed local database file:", err.message);
+      }
+    }
+    return parsed;
   } catch (err) {
     console.error(`Error reading local db file ${filename}:`, err);
     return [];
@@ -182,10 +213,42 @@ function registerModel(name, filename, mongooseModel) {
 function getModel(name) {
   return new Proxy({}, {
     get(target, prop) {
-      const activeModel = useLocalFiles ? models[name].localModel : models[name].mongooseModel;
-      const value = activeModel[prop];
+      if (useLocalFiles) {
+        const localModel = models[name].localModel;
+        const value = localModel[prop];
+        if (typeof value === "function") {
+          return value.bind(localModel);
+        }
+        return value;
+      }
+
+      const mongooseModel = models[name].mongooseModel;
+      const value = mongooseModel[prop];
       if (typeof value === "function") {
-        return value.bind(activeModel);
+        return async function(...args) {
+          try {
+            return await value.apply(mongooseModel, args);
+          } catch (err) {
+            const isConnectionError = 
+              err.name === "MongooseError" || 
+              err.name === "MongoNetworkError" ||
+              err.message.includes("buffering") || 
+              err.message.includes("connection") || 
+              err.message.includes("timed out") ||
+              err.message.includes("Mongo");
+
+            if (isConnectionError) {
+              console.warn(`Database connection/buffering error on MenuItem.${prop}: ${err.message}. Switching to local JSON files.`);
+              useLocalFiles = true;
+              const localModel = models[name].localModel;
+              const localValue = localModel[prop];
+              if (typeof localValue === "function") {
+                return await localValue.apply(localModel, args);
+              }
+            }
+            throw err;
+          }
+        };
       }
       return value;
     }
