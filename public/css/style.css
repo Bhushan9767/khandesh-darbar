@@ -1978,27 +1978,28 @@ body{
   border:none;
 }
 
-/* Drawer Body (Items List) */
+/* Drawer Body (Items List - Top 50% Section) */
 .cart-body{
-  flex: 1 1 auto;
-  min-height: 180px;
-  max-height: 45vh;
+  height: 45vh;
+  min-height: 240px;
+  flex: none;
   padding: 15px 20px;
   overflow-y: auto;
-  border-bottom: 2px dashed #e0e0e0;
+  border-bottom: 3px solid var(--primary);
+  background: white;
 }
 
 .cart-item{
   display:flex;
   align-items:center;
   gap:15px;
-  padding:15px 0;
+  padding:12px 0;
   border-bottom:1px solid #eee;
 }
 
 .cart-item img{
-  width:60px;
-  height:60px;
+  width:55px;
+  height:55px;
   object-fit:cover;
   border-radius:10px;
 }
@@ -2009,26 +2010,27 @@ body{
 
 .cart-item-details h4{
   font-size:0.95rem;
-  margin-bottom:5px;
+  margin-bottom:4px;
   font-weight:600;
+  color: var(--dark);
 }
 
 .cart-item-price{
   color:var(--primary);
-  font-weight:600;
+  font-weight:700;
   font-size:0.9rem;
 }
 
 .cart-item-qty{
   display:flex;
   align-items:center;
-  gap:10px;
-  margin-top:5px;
+  gap:8px;
+  margin-top:4px;
 }
 
 .qty-btn{
-  width:28px;
-  height:28px;
+  width:26px;
+  height:26px;
   border-radius:50%;
   border:1px solid #ccc;
   display:flex;
@@ -2036,33 +2038,42 @@ body{
   justify-content:center;
   cursor:pointer;
   background:#f9f9f9;
-  font-size:0.9rem;
+  font-size:0.85rem;
   font-weight:600;
   color:#333;
+  transition: 0.2s ease;
+}
+
+.qty-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }
 
 .qty-val{
   font-weight:600;
-  font-size:0.95rem;
+  font-size:0.9rem;
 }
 
 .remove-item-btn{
-  color:#999;
+  color:#e74c3c;
   cursor:pointer;
   transition:0.2s;
   background:none;
   border:none;
   font-size:1.1rem;
+  padding: 5px;
 }
 
 .remove-item-btn:hover{
-  color:var(--primary);
+  color:#c0392b;
+  transform: scale(1.15);
 }
 
 .cart-empty-msg{
   text-align:center;
   color:#777;
-  margin-top:30px;
+  padding: 40px 10px;
 }
 
 .cart-empty-msg i{
@@ -2071,13 +2082,12 @@ body{
   margin-bottom:15px;
 }
 
-/* Drawer Checkout Form */
+/* Drawer Checkout Form (Bottom 50% Section) */
 .cart-checkout-form{
-  flex: 0 1 auto;
+  height: calc(55vh - 70px);
+  flex: 1;
   padding: 15px 20px;
   overflow-y: auto;
-  max-height: 50vh;
-  border-top: 1px solid #eee;
   background: var(--cream);
 }
 
