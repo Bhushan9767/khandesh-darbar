@@ -114,7 +114,8 @@ function startCounter(){
         const speed = target/100;
         if(count < target){
           count += speed;
-          counter.innerText = Math.ceil(count)+"+";
+          const isFloat = target % 1 !== 0;
+          counter.innerText = (isFloat ? count.toFixed(1) : Math.ceil(count)) + "+";
           setTimeout(update, 20);
         } else {
           counter.innerText = target+"+";

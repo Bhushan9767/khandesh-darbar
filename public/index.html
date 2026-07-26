@@ -308,22 +308,22 @@ COUNTER SECTION
 <div class="counter-grid">
 
 <div class="counter-box">
-<h2 class="counter" data-target="25">0+</h2>
+<h2 class="counter" data-target="25">25+</h2>
 <p>Years Experience</p>
 </div>
 
 <div class="counter-box">
-<h2 class="counter" data-target="50000">0+</h2>
+<h2 class="counter" data-target="50000">50K+</h2>
 <p>Happy Customers</p>
 </div>
 
 <div class="counter-box">
-<h2 class="counter" data-target="150">0+</h2>
+<h2 class="counter" data-target="150">150+</h2>
 <p>Food Items</p>
 </div>
 
 <div class="counter-box">
-<h2 class="counter" data-target="4">0+</h2>
+<h2 class="counter" data-target="4.7">4.7+</h2>
 <p>Google Rating</p>
 </div>
 
@@ -384,13 +384,88 @@ MENU SECTION
 <button data-filter="dessert">Dessert</button>
 </div>
 
+<noscript>
+  <style>
+    #menuLoading { display: none !important; }
+    #menuGrid { display: grid !important; }
+  </style>
+</noscript>
+
 <!-- Dynamic Loading Indicator -->
 <div id="menuLoading" style="text-align: center; padding: 20px; font-weight: 500; color: var(--primary);">
   <i class="fa-solid fa-circle-notch fa-spin"></i> Loading Authenticating Khandeshi Menu...
 </div>
 
 <div class="menu-grid" id="menuGrid" style="display: none;">
-  <!-- Menu Items will be dynamically loaded here by script.js -->
+  <!-- Fallback static items for search engines and offline/non-JS scrapers -->
+  <article class="menu-card" data-category="thali">
+    <div class="menu-image">
+      <img src="images/khandeshithali.png" alt="Swamiraj Khandeshi Unlimited Thali">
+      <span class="badge">Bestseller</span>
+    </div>
+    <div class="menu-info">
+      <div class="menu-header">
+        <h3>Swamiraj Khandeshi Unlimited Thali <span lang="mr">(स्वामीराज अनलिमिटेड थाळी)</span></h3>
+        <span class="price">₹280</span>
+      </div>
+      <p class="description" lang="mr">अस्सल खान्देशी पद्धतीची संपूर्ण थाळी: शेव भाजी, भरीत, डाळ बट्टी, चपाती/भाकरी, भात, ताक आणि गोड.</p>
+      <div class="menu-footer">
+        <span class="diet-type">⭐ 4.9</span>
+        <button class="add-to-cart-btn" data-id="1" data-name="Swamiraj Khandeshi Unlimited Thali" data-price="280">Add to Cart</button>
+      </div>
+    </div>
+  </article>
+
+  <article class="menu-card" data-category="thali">
+    <div class="menu-image">
+      <img src="images/thali7.jpeg" alt="Khandeshi Thali">
+    </div>
+    <div class="menu-info">
+      <div class="menu-header">
+        <h3>Khandeshi Thali <span lang="mr">(खान्देशी थाळी)</span></h3>
+        <span class="price">₹180</span>
+      </div>
+      <p class="description" lang="mr">पारंपारिक शेव भाजी, वांगे भरीत, २ ज्वारीची भाकरी किंवा चपाती, वरण आणि भात.</p>
+      <div class="menu-footer">
+        <span class="diet-type">⭐ 4.8</span>
+        <button class="add-to-cart-btn" data-id="2" data-name="Khandeshi Thali" data-price="180">Add to Cart</button>
+      </div>
+    </div>
+  </article>
+
+  <article class="menu-card" data-category="bhakri">
+    <div class="menu-image">
+      <img src="images/thali6.jpeg" alt="Bharit Bhakri">
+    </div>
+    <div class="menu-info">
+      <div class="menu-header">
+        <h3>Bharit Bhakri <span lang="mr">(भरीत भाकरी)</span></h3>
+        <span class="price">₹160</span>
+      </div>
+      <p class="description" lang="mr">गरमागरम २ कळण्याची किंवा ज्वारीची भाकरी, १ वाटी खान्देशी वांगे भरीत आणि रायता.</p>
+      <div class="menu-footer">
+        <span class="diet-type">⭐ 4.7</span>
+        <button class="add-to-cart-btn" data-id="11" data-name="Bharit Bhakri" data-price="160">Add to Cart</button>
+      </div>
+    </div>
+  </article>
+
+  <article class="menu-card" data-category="thali">
+    <div class="menu-image">
+      <img src="images/thali5.jpeg" alt="Shev Bhaji Thali">
+    </div>
+    <div class="menu-info">
+      <div class="menu-header">
+        <h3>Shev Bhaji Thali <span lang="mr">(शेव भाजी थाळी)</span></h3>
+        <span class="price">₹160</span>
+      </div>
+      <p class="description" lang="mr">चमचमीत खान्देशी शेव भाजी, २ चपाती किंवा भाकरी, डाळ, भात आणि कोशिंबीर.</p>
+      <div class="menu-footer">
+        <span class="diet-type">⭐ 4.7</span>
+        <button class="add-to-cart-btn" data-id="5" data-name="Shev Bhaji Thali" data-price="160">Add to Cart</button>
+      </div>
+    </div>
+  </article>
 </div>
 
 </div>
@@ -494,7 +569,7 @@ MONTHLY MESS SYSTEM OVERLAY MODAL
   <div style="background: white; border-radius: 24px; max-width: 900px; width: 100%; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.05); overflow: hidden; margin: auto;">
     <button id="closeMessModal" style="position: absolute; top: 15px; right: 20px; font-size: 2.5rem; color: var(--primary); border: none; background: none; cursor: pointer; z-index: 2200; font-family: sans-serif; line-height: 1;">&times;</button>
     
-    <section class="mess section" id="mess" style="background: white; padding: 45px 20px 30px 20px;">
+    <section class="mess section" id="mess" lang="mr" style="background: white; padding: 45px 20px 30px 20px;">
       <div class="container" style="width: 100%; max-width: 100%;">
 
         <div class="section-heading" style="margin-bottom: 30px;">
@@ -730,9 +805,9 @@ CONTACT SECTION
 </div>
 
 <div class="social-links">
-<a href="#"><i class="fab fa-facebook-f"></i></a>
-<a href="#"><i class="fab fa-instagram"></i></a>
-<a href="#"><i class="fab fa-youtube"></i></a>
+<a href="https://www.facebook.com/hotelkhandeshdarbar" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+<a href="https://www.instagram.com/hotelkhandeshdarbar" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+<a href="https://www.youtube.com/@hotelkhandeshdarbar" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
 <a href="https://wa.me/917840911091"><i class="fab fa-whatsapp"></i></a>
 </div>
 
@@ -801,9 +876,9 @@ FOOTER
 <div>
 <h4>Follow Us</h4>
 <div class="footer-social">
-<a href="#"><i class="fab fa-facebook-f"></i></a>
-<a href="#"><i class="fab fa-instagram"></i></a>
-<a href="#"><i class="fab fa-youtube"></i></a>
+<a href="https://www.facebook.com/hotelkhandeshdarbar" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+<a href="https://www.instagram.com/hotelkhandeshdarbar" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+<a href="https://www.youtube.com/@hotelkhandeshdarbar" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
 <a href="https://wa.me/917840911091"><i class="fab fa-whatsapp"></i></a>
 </div>
 <p class="footer-rating">⭐⭐⭐⭐⭐ 4.8 Google Rating</p>
