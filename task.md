@@ -1,0 +1,39 @@
+# Project Checklist - Hotel Khandesh Darbar
+
+- [x] Create project structure and package configurations
+- [x] Configure Mongoose database connector with local JSON fallback
+- [x] Write all Mongoose schemas:
+  - [x] `Admin`
+  - [x] `MenuItem`
+  - [x] `Category`
+  - [x] `GalleryItem`
+  - [x] `Review`
+  - [x] `Offer`
+  - [x] `Booking`
+  - [x] `Subscriber`
+  - [x] `Order` (for KOT Orders)
+  - [x] `MessSubscription` (for Student Mess System)
+- [x] Create JWT-based administration authentication middleware
+- [x] Build public endpoints (`/api/menu`, `/api/bookings`, `/api/orders`, `/api/reviews`, `/api/newsletter`, `/api/mess-subscriptions`)
+- [x] Build admin endpoints (login, stats dashboard, orders status PUT, bookings status PUT, reviews approval, subscribers list, menu CRUD, mess subscriptions GET/PUT)
+- [x] Parse and write database seed script (`scripts/seed.js`) to insert all 36 physical menu items and admin credentials
+- [x] Modify public frontend `index.html` to load menu items dynamically, submit bookings, and add:
+  - [x] Floating Cart Button
+  - [x] Slide-out Checkout Cart Drawer
+  - [x] Dine-in / Takeaway order mode toggle
+  - [x] Table Number selector (Table 1-15)
+  - [x] Order Confirmation receipt popup styled as a POS KOT ticket
+  - [x] Toast Notification System for instant checkout visual feedback
+  - [x] Monthly Mess System information cards and subscription request form
+- [x] Add Cart drawer, forms, and layout styling in `css/style.css` (Optimized layout to be compact and sleek like Zomato/Amazon, with perfectly aligned bottom buttons)
+- [x] Integrate AJAX dynamic features, LocalStorage cart management, KOT generation, and reviews render in `js/script.js` (Integrated GSAP and ScrollTrigger CDN staggered animations for headers, sections, and dynamic menu cards)
+- [x] Build the Admin Panel (`public/admin/`):
+  - [x] Login Form overlay screen
+  - [x] Stat Cards dashboard view (sales, active orders, bookings, dishes)
+  - [x] KOT Kitchen Board with status selector and POS receipt-style KOT printing
+  - [x] Table Reservation manager table
+  - [x] Menu Editor Table (Edit modal forms, Toggle availability, Delete dish, Add dish)
+  - [x] Customer Reviews approval tables
+  - [x] Subscribers email viewer
+  - [x] Monthly Mess System manager (Activate, Terminate, or Reject student requests)
+- [x] Run automated integration test suite (`verify.js`) to assert backend API correctness (All 10 integration tests passed successfully)

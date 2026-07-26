@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Hotel Khandesh Darbar</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!--==================================
+          LOGIN VIEW
+  ===================================-->
+  <div class="login-container" id="loginView" style="display: flex;">
+    <div class="login-card">
+      <h2>Khandesh Darbar</h2>
+      <p>Pure Veg Restaurant Admin Panel</p>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" placeholder="admin@khandeshdarbar.in" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="login-btn">Log In</button>
+      </form>
+    </div>
+  </div>
+
+  <!--==================================
+          DASHBOARD VIEW (LOGGED IN)
+  ===================================-->
+  <div class="admin-layout" id="dashboardLayout" style="display: none;">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <i class="fa-solid fa-utensils" style="font-size: 2rem; color: var(--gold);"></i>
+        <div>
+          <h3>Khandesh Darbar</h3>
+          <span>Owner Console</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="active" data-view="dashboard">
+          <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        </li>
+        <li data-view="kot">
+          <a href="#"><i class="fa-solid fa-receipt"></i> KOT Orders</a>
+        </li>
+        <li data-view="bookings">
+          <a href="#"><i class="fa-solid fa-calendar-check"></i> Bookings</a>
+        </li>
+        <li data-view="menu">
+          <a href="#"><i class="fa-solid fa-burger"></i> Menu Editor</a>
+        </li>
+        <li data-view="reviews">
+          <a href="#"><i class="fa-solid fa-star"></i> Reviews</a>
+        </li>
+        <li data-view="subscribers">
+          <a href="#"><i class="fa-solid fa-users"></i> Subscribers</a>
+        </li>
+        <li data-view="mess">
+          <a href="#"><i class="fa-solid fa-bowl-food"></i> Mess System</a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="main-content">
+      
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <h2 id="pageTitle">Dashboard Overview</h2>
+        <div class="user-profile">
+          <div class="avatar-badge" id="adminInitial">A</div>
+          <span style="font-weight: 500;" id="adminName">Admin User</span>
+        </div>
+      </header>
+
+      <!-- Page Container -->
+      <div class="page-container">
+        
+        <!-- =======================
+                VIEW: DASHBOARD
+        ======================== -->
+        <section id="viewDashboard" class="view-section">
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="statSales">₹0</h3>
+                <p>Today's Sales</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="statKOTs">0</h3>
+                <p>Active KOTs</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-fire-burner"></i></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="statBookings">0</h3>
+                <p>Pending Tables</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-couch"></i></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <h3 id="statMenu">0</h3>
+                <p>Menu Items</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-utensils"></i></div>
+            </div>
+          </div>
+
+          <!-- Quick views layout -->
+          <div class="kot-board" style="grid-template-columns: 1fr; margin-top: 30px;">
+            <div class="table-card">
+              <div class="table-header">
+                <h3>Quick Kitchen Summary (Active KOTs)</h3>
+              </div>
+              <div class="table-responsive">
+                <table style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th>KOT No</th>
+                      <th>Type</th>
+                      <th>Table</th>
+                      <th>Customer</th>
+                      <th>Items</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="quickKOTBody">
+                    <tr><td colspan="7" style="text-align: center;">No active kitchen tickets.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================
+                VIEW: KOT ORDERS BOARD
+        ======================== -->
+        <section id="viewKOT" class="view-section" style="display: none;">
+          <div style="display: flex; gap: 15px; margin-bottom: 25px; align-items: center; flex-wrap: wrap;">
+            <h3 style="font-weight: 600;">Active Kitchen Tickets</h3>
+            <div style="flex: 1;"></div>
+            <!-- Status Filtering -->
+            <select id="kotFilter" style="padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid #ccc; font-size: 0.9rem;">
+              <option value="active">All Active Tickets</option>
+              <option value="pending">Pending Only</option>
+              <option value="preparing">Preparing Only</option>
+              <option value="served">Served Only</option>
+              <option value="completed">Completed/All</option>
+            </select>
+          </div>
+          
+          <div class="kot-board" id="kotBoardGrid">
+            <!-- Dynamic Kitchen Tickets Card Grid -->
+          </div>
+        </section>
+
+        <!-- =======================
+                VIEW: TABLE BOOKINGS
+        ======================== -->
+        <section id="viewBookings" class="view-section" style="display: none;">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Table Reservations</h3>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Date & Time</th>
+                    <th>Guests</th>
+                    <th>Request Notes</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                  <!-- Bookings injected here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================
+                VIEW: MENU EDITOR
+        ======================== -->
+        <section id="viewMenu" class="view-section" style="display: none;">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Restaurant Dishes</h3>
+              <button class="btn-add-item" id="addNewMenuBtn">
+                <i class="fa-solid fa-plus"></i> Add Menu Item
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Dish Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Veg</th>
+                    <th>Available</th>
+                    <th>Badge / Tag</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="menuTableBody">
+                  <!-- Menu items loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================
+                VIEW: REVIEWS MODERATION
+        ======================== -->
+        <section id="viewReviews" class="view-section" style="display: none;">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Customer Reviews Moderation</h3>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Author</th>
+                    <th>Rating</th>
+                    <th>Comment Text</th>
+                    <th>Source</th>
+                    <th>Approved</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reviewsTableBody">
+                  <!-- Reviews populated here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================
+                VIEW: SUBSCRIBERS
+        ======================== -->
+        <section id="viewSubscribers" class="view-section" style="display: none;">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Newsletter Subscriptions</h3>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Email Address</th>
+                    <th>Subscribed On</th>
+                  </tr>
+                </thead>
+                <tbody id="subscribersTableBody">
+                  <!-- Subscribers list -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Monthly Mess System View -->
+        <section id="viewMess" class="view-section" style="display: none;">
+          <div class="view-header">
+            <h2>Monthly Mess Subscriptions</h2>
+            <p>Manage monthly student and professional mess registrations, verify payments, and change statuses.</p>
+          </div>
+          
+          <div class="dashboard-card" style="margin-top: 20px;">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Mobile</th>
+                    <th>Plan Selection</th>
+                    <th>Preferred Start</th>
+                    <th>Expiry Date</th>
+                    <th>Days Left</th>
+                    <th>Notes / Address</th>
+                    <th>Admin Notes</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="messSubscriptionsTableBody">
+                  <!-- Mess subscriptions will be rendered here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!--==================================
+        MENU ITEM MODAL (ADD / EDIT)
+  ===================================-->
+  <div class="modal-backdrop" id="menuItemModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="menuModalTitle">Add Menu Item</h3>
+        <button class="modal-close-btn" id="closeMenuModalBtn">&times;</button>
+      </div>
+      
+      <form id="menuItemForm">
+        <input type="hidden" id="menuItemId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Dish Name *</label>
+            <input type="text" id="menuItemName" placeholder="e.g. Shev Bhaji" required>
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="menuItemCategory" required>
+              <option value="thali">Special Thali</option>
+              <option value="bhakri">Bhakri</option>
+              <option value="sabzi">Sabzi</option>
+              <option value="dessert">Dessert</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price (₹) *</label>
+            <input type="number" id="menuItemPrice" placeholder="e.g. 170" required min="0">
+          </div>
+          <div class="form-group">
+            <label>Dish Image *</label>
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
+              <input type="text" id="menuItemImage" placeholder="e.g. images/thali5.jpeg" required style="flex: 1;">
+              <label for="imageUploadInput" style="background: var(--gold); color: #1a1a1a; padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; margin-bottom: 0;">
+                <i class="fa-solid fa-upload"></i> Upload
+              </label>
+              <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
+            </div>
+            <span id="uploadStatusText" style="font-size: 0.75rem; color: #777; margin-top: 4px; display: block;">Or select a file to upload directly to your server.</span>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="menuItemDesc" placeholder="Describe this authentic dish..."></textarea>
+          </div>
+          <div class="form-group" style="display: flex; gap: 40px; align-items: center;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="menuItemVeg" checked style="width: auto;"> 🟢 Pure Veg
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="menuItemAvailable" checked style="width: auto;"> Available (Active)
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Badge (e.g. Bestseller, Seasonal)</label>
+            <input type="text" id="menuItemBadge" placeholder="e.g. Bestseller">
+          </div>
+          <div class="form-group">
+            <label>Tag (e.g. Hot, Favourite)</label>
+            <input type="text" id="menuItemTag" placeholder="e.g. Hot">
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel-modal" id="cancelMenuModalBtn">Cancel</button>
+          <button type="submit" class="btn-save-modal">Save Dish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!--==================================
+        MESS SUBSCRIPTION DETAILS MODAL
+  ===================================-->
+  <div class="modal-backdrop" id="messDetailsModal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Edit Mess Membership</h3>
+        <button class="modal-close-btn" id="closeMessDetailsModalBtn">&times;</button>
+      </div>
+      
+      <form id="messDetailsForm">
+        <input type="hidden" id="editMessId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" id="editMessName" readonly style="background: #f4f4f4; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label>Plan Selection *</label>
+            <select id="editMessPlan" required>
+              <option value="standard-1">साधी मेस (1 Meal) - ₹1,800/M</option>
+              <option value="standard-2">साधी मेस (2 Meals) - ₹3,000/M</option>
+              <option value="khandeshi-1">खान्देशी स्पेशल (1 Meal) - ₹2,200/M</option>
+              <option value="khandeshi-2">खान्देशी स्पेशल (2 Meals) - ₹3,800/M</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Timing Preference *</label>
+            <select id="editMessTiming" required>
+              <option value="lunch">Lunch Only</option>
+              <option value="dinner">Dinner Only</option>
+              <option value="both">Both (Lunch & Dinner)</option>
+            </select>
+          </div>
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <label>Start Date *</label>
+              <input type="date" id="editMessStartDate" required>
+            </div>
+            <div>
+              <label>Expiry Date *</label>
+              <input type="date" id="editMessEndDate" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Membership Status *</label>
+            <select id="editMessStatus" required>
+              <option value="pending">Pending Approval</option>
+              <option value="active">Active Subscriber</option>
+              <option value="suspended">Suspended</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Admin Notes & Annotations (e.g. Room No, Payment Details)</label>
+            <textarea id="editMessAdminNotes" placeholder="Write admin notes here..." style="height: 70px; resize: none;"></textarea>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel-modal" id="cancelMessDetailsModalBtn">Cancel</button>
+          <button type="submit" class="btn-save-modal">Save Subscription</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
