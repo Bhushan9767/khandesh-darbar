@@ -197,6 +197,14 @@ async function runTests() {
     assert.strictEqual(messDeleteResult.message, "Mess subscription deleted successfully!");
     console.log(`-> SUCCESS: Mess subscription deleted successfully.`);
 
+    // 12. Test Static Sitemap & Robots.txt
+    console.log("Testing GET /sitemap.xml & /robots.txt...");
+    const sitemapRes = await fetch("http://localhost:5001/sitemap.xml");
+    assert.strictEqual(sitemapRes.status, 200);
+    const robotsRes = await fetch("http://localhost:5001/robots.txt");
+    assert.strictEqual(robotsRes.status, 200);
+    console.log("-> SUCCESS: sitemap.xml and robots.txt are reachable.");
+
     console.log("\n====================================================");
     console.log("      ALL INTEGRATION TESTS PASSED SUCCESSFULLY!     ");
     console.log("====================================================\n");

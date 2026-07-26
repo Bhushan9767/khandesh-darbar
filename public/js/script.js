@@ -1,4 +1,24 @@
 /*====================================================
+        PAGE PRELOADER & SCROLL PROGRESS
+====================================================*/
+window.addEventListener("load", () => {
+  const preloader = document.getElementById("preloader");
+  if (preloader) {
+    preloader.classList.add("loaded");
+  }
+});
+
+window.addEventListener("scroll", () => {
+  const progressBar = document.getElementById("scrollProgressBar");
+  if (progressBar) {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    progressBar.style.width = scrolled + "%";
+  }
+});
+
+/*====================================================
         SCROLL REVEAL (Progressive Enhancement)
 ====================================================*/
 (function(){
@@ -366,10 +386,29 @@ window.addToCart = function(name, price, image) {
 const menuGrid = document.getElementById("menuGrid");
 const menuLoading = document.getElementById("menuLoading");
 
-async function loadMenu() {
+async function loadMenu(retryCount = 0) {
+  const maxRetries = 3;
+  
+  // Show skeleton loading shimmers on first attempt
+  if (retryCount === 0 && menuGrid) {
+    let skeletonHtml = "";
+    for (let i = 0; i < 4; i++) {
+      skeletonHtml += `
+        <div class="skeleton-card">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+        </div>
+      `;
+    }
+    menuGrid.innerHTML = skeletonHtml;
+    menuGrid.style.display = "grid";
+    if (menuLoading) menuLoading.style.display = "none";
+  }
+
   try {
     const res = await fetch("/api/menu");
-    if (!res.ok) throw new Error("Could not load menu");
+    if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
     const menuItems = await res.json();
     
     if (menuLoading) menuLoading.style.display = "none";
@@ -382,7 +421,7 @@ async function loadMenu() {
       }
 
       let gridHtml = "";
-      menuItems.forEach((item, index) => {
+      menuItems.forEach((item) => {
         const badgeHtml = item.badge ? `<span class="badge ${item.badge === 'Chef Choice' ? 'new' : ''}">${item.badge}</span>` : "";
         const tagHtml = item.tag ? `<span>🔥 ${item.tag}</span>` : `<span>⭐ ${item.rating || '4.7'}</span>`;
         
@@ -425,15 +464,26 @@ async function loadMenu() {
         });
       }
 
-      // Refresh ScrollTrigger to calculate correct offsets for lower sections (About, Reservation, etc.)
+      // Refresh ScrollTrigger to calculate correct offsets for lower sections
       if (window.ScrollTrigger) {
         ScrollTrigger.refresh();
       }
     }
   } catch (err) {
-    console.error("Error loading dynamic menu:", err);
-    if (menuLoading) {
-      menuLoading.innerHTML = `<p style="color: red;">Failed to load live menu. Refresh or try again.</p>`;
+    console.warn(`Menu load attempt ${retryCount + 1} failed:`, err.message);
+    if (retryCount < maxRetries - 1) {
+      setTimeout(() => loadMenu(retryCount + 1), 1500);
+    } else {
+      if (menuGrid) {
+        menuGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px; background: #fff; border-radius: 16px; border: 1px dashed var(--primary);">
+            <i class="fa-solid fa-utensils" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h3 style="margin-bottom: 10px; color: var(--primary);">Unable to connect to live menu</h3>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text);">Server is waking up from sleep. Please click below to reload menu.</p>
+            <button class="primary-btn" onclick="loadMenu(0)">Retry Menu</button>
+          </div>
+        `;
+      }
     }
   }
 }

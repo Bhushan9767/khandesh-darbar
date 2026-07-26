@@ -18,6 +18,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api", require("./routes/public"));
 app.use("/api/admin", require("./routes/admin"));
 
+// Serve SEO Files
+app.get("/sitemap.xml", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/sitemap.xml"));
+});
+app.get("/robots.txt", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/robots.txt"));
+});
+
 // Serve Admin Panel Index explicitly if needed
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "public/admin/index.html"));
