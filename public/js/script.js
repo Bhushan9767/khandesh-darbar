@@ -706,12 +706,118 @@ function showKotReceipt(order) {
     instContainer.style.display = "none";
   }
 
+  // Construct WhatsApp Order Message
+  const waText = encodeURIComponent(
+    `*🏨 HOTEL KHANDESH DARBAR - KOT ORDER*\n` +
+    `-----------------------------------\n` +
+    `*KOT No:* ${order.kotNo}\n` +
+    `*Order Type:* ${order.type === 'dine-in' ? 'Dine-In (' + order.tableNo + ')' : 'Takeaway (Parcel)'}\n` +
+    `*Customer:* ${order.name} (${order.phone})\n` +
+    `-----------------------------------\n` +
+    `*ORDERED ITEMS:*\n` +
+    order.items.map(i => `• ${i.name} x ${i.quantity} = ₹${i.price * i.quantity}`).join('\n') + `\n` +
+    `-----------------------------------\n` +
+    `*TOTAL BILL:* ₹${order.totalAmount}\n` +
+    (order.notes ? `*Special Note:* ${order.notes}\n` : '') +
+    `-----------------------------------\n` +
+    `🟢 100% Pure Veg | Thank you!`
+  );
+  const waLink = `https://wa.me/919767977156?text=${waText}`;
+
+  // Inject or update WhatsApp button in KOT receipt modal
+  let waBtn = document.getElementById("recWhatsappBtn");
+  if (!waBtn) {
+    waBtn = document.createElement("a");
+    waBtn.id = "recWhatsappBtn";
+    waBtn.className = "primary-btn whatsapp-order-btn";
+    waBtn.target = "_blank";
+    waBtn.style.marginTop = "15px";
+    waBtn.style.textDecoration = "none";
+    const modalBox = document.querySelector("#kotReceiptModal > div");
+    if (modalBox) modalBox.appendChild(waBtn);
+  }
+  waBtn.href = waLink;
+  waBtn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Send KOT to Restaurant WhatsApp`;
+
   // Display Modal
   const modal = document.getElementById("kotReceiptModal");
   if (modal) {
     modal.style.display = "flex";
   }
 }
+
+/*====================================================
+        MONTHLY MESS SUBSCRIPTION LOGIC
+====================================================*/
+window.openMessModal = function(planName, price) {
+  document.getElementById("messPlanName").value = `${planName} - ₹${price}`;
+  const modal = document.getElementById("messSubscriptionModal");
+  if (modal) modal.style.display = "flex";
+};
+
+window.closeMessModal = function() {
+  const modal = document.getElementById("messSubscriptionModal");
+  if (modal) modal.style.display = "none";
+};
+
+const messForm = document.getElementById("messSubscriptionForm");
+if (messForm) {
+  messForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("messCustName").value.trim();
+    const phone = document.getElementById("messCustPhone").value.trim();
+    const serviceType = document.getElementById("messServiceType").value;
+    const address = document.getElementById("messAddress").value.trim();
+    const plan = document.getElementById("messPlanName").value;
+
+    const cleanPhone = phone.replace(/\D/g, "");
+    if (cleanPhone.length !== 10) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/mess-subscriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone: cleanPhone, plan, serviceType, address })
+      });
+
+      if (!res.ok) throw new Error("Failed to subscribe mess plan");
+
+      closeMessModal();
+      showToast("🎉 Mess Subscription Request Sent Successfully!");
+      alert(`Thank you ${name}! Your Mess Subscription request has been received. Our manager will call you shortly on ${cleanPhone}.`);
+      messForm.reset();
+    } catch (err) {
+      alert("Error booking mess subscription: " + err.message);
+    }
+  });
+}
+
+/*====================================================
+        UPI ONLINE PAYMENT MODAL LOGIC
+====================================================*/
+window.openUpiModal = function(amount) {
+  document.getElementById("upiModalAmount").innerText = `₹${amount}`;
+  const upiUrl = `upi://pay?pa=9767977156@ybl&pn=Hotel%20Khandesh%20Darbar&am=${amount}&cu=INR`;
+  document.getElementById("upiQrImage").src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+  document.getElementById("gpayBtn").href = upiUrl;
+  document.getElementById("phonepeBtn").href = upiUrl;
+  
+  const modal = document.getElementById("upiPaymentModal");
+  if (modal) modal.style.display = "flex";
+};
+
+window.closeUpiModal = function() {
+  const modal = document.getElementById("upiPaymentModal");
+  if (modal) modal.style.display = "none";
+};
+
+window.confirmUpiPayment = function() {
+  closeUpiModal();
+  showToast("Payment Marked! Submitting order...");
+};
 
 /*====================================================
         TABLE BOOKING FORM SUBMISSION

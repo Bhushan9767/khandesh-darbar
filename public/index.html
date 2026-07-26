@@ -588,6 +588,143 @@ GALLERY
 </section>
 
 <!--==================================
+MONTHLY MESS SUBSCRIPTION SECTION
+===================================-->
+<section class="mess-section" id="mess">
+<div class="container">
+
+<div class="section-heading">
+<span>Monthly Tiffin & Mess Service</span>
+<h2>Swami Samarth Monthly Mess Plans</h2>
+<p>Enjoy fresh, hygienic, 100% Pure Veg homemade Khandeshi meals every day. Ideal for students, working professionals & families in Sangli.</p>
+</div>
+
+<div class="mess-grid">
+
+<!-- Mess Plan 1 -->
+<div class="mess-card">
+<div class="mess-header">
+<h3>Regular Lunch / Dinner Mess</h3>
+<p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">३० दिवस - दररोज १ टाइम जेवण (दुपारी किंवा रात्री)</p>
+<div class="mess-price">₹3,000 <span>/ महिना</span></div>
+</div>
+<ul class="mess-features">
+<li><i class="fa-solid fa-circle-check"></i> १ सुकी किंवा रस्सा भाजी (दररोज बदलणारी)</li>
+<li><i class="fa-solid fa-circle-check"></i> ४ चपाती / २ ज्वारी भाकरी</li>
+<li><i class="fa-solid fa-circle-check"></i> १ वाटी भात व वरण / आमटी</li>
+<li><i class="fa-solid fa-circle-check"></i> ताजे दही / रायता + पापड</li>
+<li><i class="fa-solid fa-circle-check"></i> डबा (Tiffin) डिलिव्हरी किंवा हॉटेलमध्ये जेवण</li>
+</ul>
+<button class="mess-btn" onclick="openMessModal('Regular Lunch/Dinner Mess', 3000)">Subscribe Mess</button>
+</div>
+
+<!-- Mess Plan 2 -->
+<div class="mess-card featured">
+<div class="mess-badge">Most Popular</div>
+<div class="mess-header">
+<h3>Royal Unlimited Both Time Mess</h3>
+<p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">३० दिवस - दोन्ही टाइम (दुपारी व रात्री अमर्याद जेवण)</p>
+<div class="mess-price">₹5,500 <span>/ महिना</span></div>
+</div>
+<ul class="mess-features">
+<li><i class="fa-solid fa-circle-check"></i> २ प्रकारच्या भाज्या (भरीत / शेव भाजी / वरण बट्टी)</li>
+<li><i class="fa-solid fa-circle-check"></i> अमर्याद चपाती / ज्वारी व कळण्याची भाकरी</li>
+<li><i class="fa-solid fa-circle-check"></i> अमर्याद जीरा राईस व वरण तूप</li>
+<li><i class="fa-solid fa-circle-check"></i> रविवारी स्पेशल गोड (श्रीखंड / खीर / लाडू)</li>
+<li><i class="fa-solid fa-circle-check"></i> हॉटेलमध्ये व्हिआयपी डायनिंग सीटींग</li>
+</ul>
+<button class="mess-btn" style="background: linear-gradient(135deg, var(--primary), #800000);" onclick="openMessModal('Royal Unlimited Both Time Mess', 5500)">Subscribe Mess</button>
+</div>
+
+<!-- Mess Plan 3 -->
+<div class="mess-card">
+<div class="mess-header">
+<h3>15 Days Trial Mess</h3>
+<p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">१५ दिवस - ट्रायल टिफिन प्लॅन</p>
+<div class="mess-price">₹1,800 <span>/ १५ दिवस</span></div>
+</div>
+<ul class="mess-features">
+<li><i class="fa-solid fa-circle-check"></i> १ भाजी, चपाती/भाकरी, वरण भात</li>
+<li><i class="fa-solid fa-circle-check"></i> १५ दिवसांचा फ्लेक्सिबल ट्रायल</li>
+<li><i class="fa-solid fa-circle-check"></i> घरपोच टिफिन सुविधा उपलब्ध</li>
+<li><i class="fa-solid fa-circle-check"></i> १००% स्वच्छ व हायजिनिक किचन</li>
+</ul>
+<button class="mess-btn" onclick="openMessModal('15 Days Trial Mess', 1800)">Subscribe Mess</button>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<!--==================================
+MESS SUBSCRIPTION BOOKING MODAL
+===================================-->
+<div id="messSubscriptionModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:2500; align-items:center; justify-content:center;">
+<div style="background:#fff; width:min(92%, 480px); border-radius:20px; padding:25px; box-shadow:0 20px 50px rgba(0,0,0,0.3); border-top:4px solid var(--primary); relative;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+<h3 style="font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--dark);">Subscribe Mess Plan</h3>
+<button onclick="closeMessModal()" style="font-size:1.5rem; color:#888; border:none; background:none; cursor:pointer;">&times;</button>
+</div>
+<form id="messSubscriptionForm">
+<div style="margin-bottom:12px;">
+<label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Selected Plan</label>
+<input type="text" id="messPlanName" readonly style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; background:#f9f9f9; font-weight:700; color:var(--primary);">
+</div>
+<div style="margin-bottom:12px;">
+<label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Full Name (तुमचे नाव) *</label>
+<input type="text" id="messCustName" required placeholder="Enter your full name" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+</div>
+<div style="margin-bottom:12px;">
+<label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Mobile Number (मोबाईल नंबर) *</label>
+<input type="tel" id="messCustPhone" required maxlength="10" placeholder="10-digit mobile number" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+</div>
+<div style="margin-bottom:12px;">
+<label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Service Preference</label>
+<select id="messServiceType" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+<option value="dine-in">Holi Dine-In (हॉटेलमध्ये येऊन जेवणे)</option>
+<option value="tiffin">Home Delivery Tiffin (घरपोच टिफिन)</option>
+</select>
+</div>
+<div style="margin-bottom:15px;">
+<label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Delivery Address / Notes</label>
+<textarea id="messAddress" rows="2" placeholder="Enter delivery address in Sangli (if opting Tiffin)" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"></textarea>
+</div>
+<button type="submit" class="primary-btn" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">Confirm & Book Mess</button>
+</form>
+</div>
+</div>
+
+<!--==================================
+UPI PAYMENT MODAL (PhonePe / GPay / QR)
+===================================-->
+<div id="upiPaymentModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); z-index:2600; align-items:center; justify-content:center;">
+<div style="background:#fff; width:min(92%, 440px); border-radius:20px; padding:25px; box-shadow:0 20px 50px rgba(0,0,0,0.3); text-align:center; border-top:4px solid #27ae60;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+<h3 style="font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--dark);">UPI Online Payment</h3>
+<button onclick="closeUpiModal()" style="font-size:1.5rem; color:#888; border:none; background:none; cursor:pointer;">&times;</button>
+</div>
+<p style="font-size:0.85rem; color:#666;">Scan QR or pay directly via GPay / PhonePe / Paytm</p>
+
+<div style="font-size:1.8rem; font-weight:800; color:var(--primary); margin:10px 0;" id="upiModalAmount">₹0</div>
+
+<div class="upi-qr-box">
+<img id="upiQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9767977156@ybl%26pn=Hotel%20Khandesh%20Darbar%26cu=INR" alt="UPI Payment QR Code">
+<p style="font-size:0.75rem; color:#888; margin:0;">UPI ID: <strong>9767977156@ybl</strong></p>
+</div>
+
+<div class="upi-apps-row">
+<a id="gpayBtn" href="#" class="upi-app-btn"><i class="fa-solid fa-mobile-screen-button" style="color:#4285F4;"></i> GPay / UPI</a>
+<a id="phonepeBtn" href="#" class="upi-app-btn"><i class="fa-solid fa-wallet" style="color:#5f259f;"></i> PhonePe</a>
+</div>
+
+<button onclick="confirmUpiPayment()" class="primary-btn" style="width:100%; padding:12px; margin-top:10px; background:linear-gradient(135deg, #27ae60, #1e8449); border-radius:10px;">
+<i class="fa-solid fa-circle-check"></i> I Have Paid - Generate KOT
+</button>
+</div>
+</div>
+
+<!--==================================
 EXPERIENCE BANNER
 ===================================-->
 <section class="experience-banner">

@@ -121,7 +121,7 @@ button{
 }
 
 .section{
-  padding:100px 0;
+  padding: 55px 0;
 }
 
 /*====================================================
@@ -133,7 +133,7 @@ button{
   text-align:center;
   max-width:750px;
   margin:auto;
-  margin-bottom:60px;
+  margin-bottom:35px;
 }
 
 .section-heading span,
@@ -2322,5 +2322,180 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 3px;
+}
+
+/*====================================================
+        MONTHLY MESS SUBSCRIPTION COMPONENT
+====================================================*/
+.mess-section {
+  background: var(--bg-cream, #FFFDF9);
+  padding: 55px 0;
+  border-bottom: 2px dashed rgba(165, 42, 42, 0.1);
+}
+
+.mess-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.mess-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.mess-card.featured {
+  border-color: var(--primary, #a52a2a);
+  transform: scale(1.03);
+  box-shadow: 0 15px 40px rgba(165, 42, 42, 0.15);
+}
+
+.mess-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+}
+
+.mess-badge {
+  position: absolute;
+  top: -15px;
+  right: 25px;
+  background: linear-gradient(135deg, var(--primary, #a52a2a), #800000);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.mess-header h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  color: var(--dark, #160d08);
+}
+
+.mess-price {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary, #a52a2a);
+  margin-bottom: 20px;
+}
+
+.mess-price span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.mess-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 25px 0;
+  flex-grow: 1;
+}
+
+.mess-features li {
+  padding: 8px 0;
+  font-size: 0.9rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px dashed #eee;
+}
+
+.mess-features li i {
+  color: #27ae60;
+  font-size: 1rem;
+}
+
+.mess-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #160d08, #2a1a11);
+  color: white;
+}
+
+.mess-btn:hover {
+  background: linear-gradient(135deg, var(--primary, #a52a2a), #800000);
+  box-shadow: 0 6px 20px rgba(165, 42, 42, 0.3);
+}
+
+/*====================================================
+        UPI PAYMENT MODAL & WHATSAPP STYLES
+====================================================*/
+.upi-qr-box {
+  background: #fff;
+  border: 2px dashed var(--primary, #a52a2a);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.upi-qr-box img {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 10px auto;
+  border-radius: 10px;
+}
+
+.upi-apps-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.upi-app-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.upi-app-btn:hover {
+  background: #eef2f7;
+  border-color: var(--primary, #a52a2a);
+}
+
+.whatsapp-order-btn {
+  background: #25D366 !important;
+  color: white !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35) !important;
+}
+
+.whatsapp-order-btn:hover {
+  background: #1eb954 !important;
+  transform: translateY(-2px);
 }
 
