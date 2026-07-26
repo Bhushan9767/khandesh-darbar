@@ -16,15 +16,20 @@ async function connectDB() {
     return;
   }
   try {
-    // Set a timeout of 3 seconds so it fails fast if MongoDB is not running locally
     await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 3000
+      serverSelectionTimeoutMS: 2000,
+      connectTimeoutMS: 2000
     });
-    console.log("MongoDB Database Connected Successfully.");
+    // Ping the database to ensure queries are not blocked by Atlas IP restrictions
+    await mongoose.connection.db.admin().ping();
+    console.log("MongoDB Database Connected & Pinged Successfully.");
   } catch (error) {
-    console.warn("MongoDB connection failed:", error.message);
+    console.warn("MongoDB connection or ping failed:", error.message);
     console.warn("Falling back to local JSON files in '/data'.");
     useLocalFiles = true;
+    try {
+      await mongoose.disconnect();
+    } catch (e) {}
   }
 }
 
