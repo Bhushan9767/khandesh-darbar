@@ -368,6 +368,12 @@ window.addToCart = function(name, price, image) {
   }
   updateCartUI();
   
+  // Auto-open Cart Drawer so customer immediately sees added items
+  if (cartDrawer && cartOverlay) {
+    cartDrawer.classList.add("open");
+    cartOverlay.classList.add("show");
+  }
+
   // Visual feedback: Show a Toast Notification
   showToast(`Added: ${name} (₹${price})`);
   
