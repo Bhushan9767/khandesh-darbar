@@ -68,6 +68,16 @@ router.post("/reviews", async (req, res) => {
   }
 });
 
+// Get approved reviews
+router.get("/reviews", async (req, res) => {
+  try {
+    const reviews = await Review.find({ approved: true });
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching reviews", error: err.message });
+  }
+});
+
 // Subscribe to newsletter
 router.post("/newsletter", async (req, res) => {
   try {
