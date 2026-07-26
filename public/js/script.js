@@ -597,16 +597,26 @@ if (cartCheckoutForm) {
     const phone = document.getElementById("custPhone").value.trim();
     const type = document.getElementById("orderType").value;
     const tableNo = document.getElementById("tableNo").value;
-    const notes = document.getElementById("orderNotes").value.trim();
+    if (!cart || cart.length === 0) {
+      alert("Your cart is empty! Please add dishes to your cart before placing an order.");
+      return;
+    }
 
     if (type === "dine-in" && !tableNo) {
-      alert("Please select a table number for Dine-In.");
+      alert("Please select a table number (Table 1-15) for Dine-In.");
+      return;
+    }
+
+    // Validate 10-digit Indian phone number
+    const cleanPhone = phone.replace(/\D/g, "");
+    if (cleanPhone.length !== 10) {
+      alert("Please enter a valid 10-digit mobile number.");
       return;
     }
 
     const orderData = {
       name,
-      phone,
+      phone: cleanPhone,
       type,
       tableNo,
       items: cart,

@@ -192,13 +192,25 @@ async function loadDashboardStats() {
       const orders = await ordersRes.json();
       const activeOnly = orders.filter(o => ["pending", "preparing", "served"].includes(o.status));
       
+function safeGetItems(rawItems) {
+  if (Array.isArray(rawItems)) return rawItems;
+  if (typeof rawItems === "string") {
+    try {
+      const parsed = JSON.parse(rawItems);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {}
+  }
+  return [];
+}
+
       const tbody = document.getElementById("quickKOTBody");
       if (activeOnly.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No active kitchen tickets.</td></tr>`;
       } else {
         let rows = "";
         activeOnly.slice(0, 5).forEach(o => {
-          const itemsSummary = o.items.map(i => `${i.name} (${i.quantity})`).join(", ");
+          const itemList = safeGetItems(o.items);
+          const itemsSummary = itemList.map(i => `${i.name} (${i.quantity || 1})`).join(", ") || "No items specified";
           const statusBadge = `<span class="badge-pill status-${o.status}">${o.status}</span>`;
           rows += `
             <tr>
@@ -206,7 +218,7 @@ async function loadDashboardStats() {
               <td>${o.type.toUpperCase()}</td>
               <td>${o.type === 'dine-in' ? o.tableNo : '-'}</td>
               <td>${o.name}</td>
-              <td style="max-width: 250px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${itemsSummary}</td>
+              <td style="max-width: 250px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="${itemsSummary}">${itemsSummary}</td>
               <td>₹${o.totalAmount}</td>
               <td>${statusBadge}</td>
             </tr>
@@ -259,16 +271,20 @@ async function loadKOTBoard() {
       const notesHtml = o.notes ? `<div class="kot-notes"><strong>Notes:</strong> ${o.notes}</div>` : "";
       const tableDetail = o.type === "dine-in" ? `<strong>Table:</strong> ${o.tableNo}` : "<strong>Type:</strong> Takeaway";
 
-      // Render Item rows
+      // Render Item rows safely
+      const itemList = safeGetItems(o.items);
       let itemsListHtml = "";
-      o.items.forEach(item => {
+      itemList.forEach(item => {
         itemsListHtml += `
           <div class="kot-item-row">
             <span class="kot-item-name">${item.name}</span>
-            <span class="kot-item-qty">x${item.quantity}</span>
+            <span class="kot-item-qty">x${item.quantity || 1}</span>
           </div>
         `;
       });
+      if (!itemsListHtml) {
+        itemsListHtml = `<div class="kot-item-row"><span class="kot-item-name">No items specified</span></div>`;
+      }
 
       // Render Status Select Options
       const statuses = ["pending", "preparing", "served", "completed", "cancelled"];
