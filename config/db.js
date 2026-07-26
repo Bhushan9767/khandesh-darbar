@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 
 // Disable Mongoose command buffering so queries fail fast if disconnected
 mongoose.set("bufferCommands", false);
+mongoose.set("bufferTimeoutMS", 500);
 
 let useLocalFiles = false;
 
@@ -235,7 +236,7 @@ function wrapPromiseOrQuery(result, name, prop, args) {
     get(target, key) {
       if (key === "then") {
         return function(onfulfilled, onrejected) {
-          return target.then(onfulfilled).catch(async (err) => {
+          return target.then(onfulfilled, async (err) => {
             const isConnectionError = 
               err.name === "MongooseError" || 
               err.name === "MongoNetworkError" ||
@@ -252,10 +253,16 @@ function wrapPromiseOrQuery(result, name, prop, args) {
               const localValue = localModel[prop];
               if (typeof localValue === "function") {
                 const localResult = localValue.apply(localModel, args);
-                return wrapPromiseOrQuery(localResult, name, prop, args);
+                const data = await wrapPromiseOrQuery(localResult, name, prop, args);
+                if (typeof onfulfilled === "function") {
+                  return onfulfilled(data);
+                }
+                return data;
               }
             }
-            if (onrejected) return onrejected(err);
+            if (typeof onrejected === "function") {
+              return onrejected(err);
+            }
             throw err;
           });
         };
