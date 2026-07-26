@@ -180,11 +180,16 @@ function registerModel(name, filename, mongooseModel) {
 }
 
 function getModel(name) {
-  if (useLocalFiles) {
-    return models[name].localModel;
-  } else {
-    return models[name].mongooseModel;
-  }
+  return new Proxy({}, {
+    get(target, prop) {
+      const activeModel = useLocalFiles ? models[name].localModel : models[name].mongooseModel;
+      const value = activeModel[prop];
+      if (typeof value === "function") {
+        return value.bind(activeModel);
+      }
+      return value;
+    }
+  });
 }
 
 module.exports = {
