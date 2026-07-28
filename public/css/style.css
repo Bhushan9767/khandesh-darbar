@@ -1305,9 +1305,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   border: 1px solid var(--border-color);
 }
 
-.menu-card-photo img {
-  border-radius: 12px;
-  width: 100%;
+.logo img {
+  border-radius: 50%;
+  object-fit: cover;
+  clip-path: circle(50% at 50% 50%);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
 /*====================================================
