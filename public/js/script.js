@@ -1,1038 +1,708 @@
 /*====================================================
-        PAGE PRELOADER & SCROLL PROGRESS
+        HOTEL KHANDESH DARBAR - MAIN JAVASCRIPT
+        Pure Vanilla JS - Zero External Dependencies
 ====================================================*/
-window.addEventListener("load", () => {
-  const preloader = document.getElementById("preloader");
-  if (preloader) {
-    preloader.classList.add("loaded");
-  }
+
+document.addEventListener("DOMContentLoaded", () => {
+  initPreloader();
+  initScrollProgress();
+  initThemeToggle();
+  initStickyHeader();
+  initMobileMenu();
+  initScrollReveal();
+  initCounters();
+  initMenuSearchAndFilter();
+  initGalleryLightbox();
+  initFaqAccordion();
+  initBookingForm();
+  initNewsletterForm();
+  initShoppingCart();
+  initBackToTop();
+  initActiveNavHighlight();
 });
 
-window.addEventListener("scroll", () => {
+/*====================================================
+        1. PAGE PRELOADER
+====================================================*/
+function initPreloader() {
+  const preloader = document.getElementById("preloader");
+  if (preloader) {
+    window.addEventListener("load", () => {
+      preloader.classList.add("loaded");
+    });
+    // Safety fallback
+    setTimeout(() => {
+      preloader.classList.add("loaded");
+    }, 1500);
+  }
+}
+
+/*====================================================
+        2. SCROLL PROGRESS BAR
+====================================================*/
+function initScrollProgress() {
   const progressBar = document.getElementById("scrollProgressBar");
-  if (progressBar) {
+  if (!progressBar) return;
+
+  window.addEventListener("scroll", () => {
     const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const scrolled = (winScroll / height) * 100;
     progressBar.style.width = scrolled + "%";
-  }
-});
+  });
+}
 
 /*====================================================
-        SCROLL REVEAL (Progressive Enhancement)
+        3. DARK / LIGHT THEME TOGGLE
 ====================================================*/
-(function(){
-  try {
-    const revealEls = document.querySelectorAll("[data-aos]");
-    if(!revealEls.length) return;
+function initThemeToggle() {
+  const themeToggleBtn = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+  const htmlEl = document.documentElement;
 
-    if(!("IntersectionObserver" in window)){
-      revealEls.forEach(el=>el.classList.add("aos-animate"));
-      return;
+  // Read cached preference or system default
+  const savedTheme = localStorage.getItem("khandesh_theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+    htmlEl.setAttribute("data-theme", "dark");
+    if (themeIcon) themeIcon.className = "fa-solid fa-sun";
+  } else {
+    htmlEl.setAttribute("data-theme", "light");
+    if (themeIcon) themeIcon.className = "fa-solid fa-moon";
+  }
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      const currentTheme = htmlEl.getAttribute("data-theme");
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+      htmlEl.setAttribute("data-theme", newTheme);
+      localStorage.setItem("khandesh_theme", newTheme);
+
+      if (themeIcon) {
+        themeIcon.className = newTheme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+      }
+
+      showToast(`Switched to ${newTheme.toUpperCase()} theme`, "info", 2000);
+    });
+  }
+}
+
+/*====================================================
+        4. STICKY HEADER
+====================================================*/
+function initStickyHeader() {
+  const header = document.getElementById("header");
+  if (!header) return;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 40) {
+      header.classList.add("scrolled");
+    } else {
+      header.classList.remove("scrolled");
     }
+  });
+}
 
-    const observer = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
+/*====================================================
+        5. MOBILE NAVIGATION MENU
+====================================================*/
+function initMobileMenu() {
+  const menuBtn = document.getElementById("menuBtn");
+  const navLinks = document.getElementById("navLinks");
+
+  if (menuBtn && navLinks) {
+    menuBtn.addEventListener("click", () => {
+      const isOpen = navLinks.classList.contains("active");
+      navLinks.classList.toggle("active");
+      menuBtn.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", !isOpen);
+    });
+
+    // Close menu when link is clicked
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("active");
+        menuBtn.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    // Close on click outside
+    document.addEventListener("click", (e) => {
+      if (!navLinks.contains(e.target) && !menuBtn.contains(e.target) && navLinks.classList.contains("active")) {
+        navLinks.classList.remove("active");
+        menuBtn.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+}
+
+/*====================================================
+        6. SCROLL REVEAL (IntersectionObserver)
+====================================================*/
+function initScrollReveal() {
+  const revealEls = document.querySelectorAll("[data-aos]");
+  if (!revealEls.length) return;
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
           const delay = entry.target.dataset.aosDelay;
-          if(delay){
-            entry.target.style.transitionDelay = (parseInt(delay,10)/1000)+"s";
+          if (delay) {
+            entry.target.style.transitionDelay = (parseInt(delay, 10) / 1000) + "s";
           }
           entry.target.classList.add("aos-animate");
           observer.unobserve(entry.target);
         }
       });
-    },{
-      threshold:0.1,
-      rootMargin:"0px 0px -50px 0px"
-    });
+    }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
 
-    revealEls.forEach(el=>observer.observe(el));
-  } catch(err) {
-    console.error("Scroll reveal error:", err);
-    document.querySelectorAll("[data-aos]")
-      .forEach(el=>el.classList.add("aos-animate"));
-  }
-})();
-
-setTimeout(()=>{
-  document.querySelectorAll("[data-aos]:not(.aos-animate)")
-    .forEach(el=>el.classList.add("aos-animate"));
-}, 2500);
-
-/*====================================================
-        MOBILE MENU
-====================================================*/
-const menuBtn = document.querySelector(".menu-btn");
-const navLinks = document.querySelector(".nav-links");
-
-if(menuBtn){
-  menuBtn.addEventListener("click",()=>{
-    navLinks.classList.toggle("active");
-    menuBtn.classList.toggle("open");
-  });
-}
-
-document.querySelectorAll(".nav-links a").forEach(link=>{
-  link.addEventListener("click",()=>{
-    navLinks.classList.remove("active");
-    menuBtn.classList.remove("open");
-  });
-});
-
-/*====================================================
-        STICKY HEADER
-====================================================*/
-const header = document.querySelector("header");
-window.addEventListener("scroll",()=>{
-  if(window.scrollY > 50){
-    header.classList.add("scrolled");
+    revealEls.forEach(el => observer.observe(el));
   } else {
-    header.classList.remove("scrolled");
+    revealEls.forEach(el => el.classList.add("aos-animate"));
   }
-});
 
-/*====================================================
-        BACK TO TOP
-====================================================*/
-const backTop = document.querySelector("#backToTop");
-window.addEventListener("scroll",()=>{
-  if(window.scrollY > 500){
-    backTop.classList.add("show");
-  } else {
-    backTop.classList.remove("show");
-  }
-});
-
-if(backTop){
-  backTop.addEventListener("click",()=>{
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
-  });
+  // Fallback safety timeout
+  setTimeout(() => {
+    revealEls.forEach(el => el.classList.add("aos-animate"));
+  }, 2000);
 }
 
 /*====================================================
-        COUNTER ANIMATION
+        7. ANIMATED COUNTERS
 ====================================================*/
-const counters = document.querySelectorAll(".counter");
-let started = false;
+function initCounters() {
+  const counters = document.querySelectorAll(".counter");
+  if (!counters.length) return;
 
-function startCounter(){
-  if(started) return;
+  let animated = false;
   const section = document.querySelector(".counter-section");
-  if(!section) return;
 
-  const sectionTop = section.offsetTop - window.innerHeight + 200;
-  if(window.scrollY > sectionTop){
-    started = true;
-    counters.forEach(counter=>{
-      const target = +counter.dataset.target;
-      let count = 0;
-      const update = () => {
-        const speed = target/100;
-        if(count < target){
-          count += speed;
-          const isFloat = target % 1 !== 0;
-          counter.innerText = (isFloat ? count.toFixed(1) : Math.ceil(count)) + "+";
-          setTimeout(update, 20);
-        } else {
-          counter.innerText = target+"+";
-        }
-      };
-      update();
+  function checkCounterScroll() {
+    if (animated || !section) return;
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= window.innerHeight - 100) {
+      animated = true;
+      counters.forEach(counter => {
+        const target = +counter.dataset.target;
+        let current = 0;
+        const increment = target / 60;
+
+        const update = () => {
+          current += increment;
+          if (current < target) {
+            const isFloat = target % 1 !== 0;
+            counter.innerText = (isFloat ? current.toFixed(1) : Math.ceil(current)) + "+";
+            setTimeout(update, 25);
+          } else {
+            counter.innerText = target + "+";
+          }
+        };
+        update();
+      });
+    }
+  }
+
+  window.addEventListener("scroll", checkCounterScroll);
+  checkCounterScroll();
+}
+
+/*====================================================
+        8. LIVE MENU SEARCH & CATEGORY FILTER
+====================================================*/
+function initMenuSearchAndFilter() {
+  const searchInput = document.getElementById("menuSearchInput");
+  const clearBtn = document.getElementById("clearSearchBtn");
+  const filterBtns = document.querySelectorAll(".menu-filter button");
+  const menuCards = document.querySelectorAll(".menu-card");
+  const noResultsMsg = document.getElementById("noResultsMsg");
+
+  let activeCategory = "all";
+  let searchQuery = "";
+
+  function filterMenu() {
+    let visibleCount = 0;
+
+    menuCards.forEach(card => {
+      const cardCategory = card.dataset.category || "";
+      const cardName = (card.dataset.name || card.innerText).toLowerCase();
+
+      const matchesCategory = activeCategory === "all" || cardCategory === activeCategory;
+      const matchesSearch = searchQuery === "" || cardName.includes(searchQuery);
+
+      if (matchesCategory && matchesSearch) {
+        card.classList.remove("hide");
+        visibleCount++;
+      } else {
+        card.classList.add("hide");
+      }
+    });
+
+    if (noResultsMsg) {
+      noResultsMsg.style.display = visibleCount === 0 ? "block" : "none";
+    }
+  }
+
+  // Search input handler
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      if (clearBtn) {
+        clearBtn.style.display = searchQuery ? "block" : "none";
+      }
+      filterMenu();
     });
   }
-}
-window.addEventListener("scroll", startCounter);
 
-/*====================================================
-        IMAGE HOVER EFFECT
-====================================================*/
-document.querySelectorAll("img").forEach(img=>{
-  img.addEventListener("mouseenter",()=>{
-    img.style.transition = ".5s";
+  // Clear search button
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      if (searchInput) searchInput.value = "";
+      searchQuery = "";
+      clearBtn.style.display = "none";
+      filterMenu();
+    });
+  }
+
+  // Category filter buttons
+  filterBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      filterBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeCategory = btn.dataset.filter || "all";
+      filterMenu();
+    });
   });
-});
-
-/*====================================================
-        CURRENT YEAR FOOTER
-====================================================*/
-const year = document.querySelector(".year");
-if(year){
-  year.innerHTML = new Date().getFullYear();
 }
 
 /*====================================================
-        ACTIVE NAV LINK ON SCROLL
+        9. GALLERY LIGHTBOX MODAL
 ====================================================*/
-const sections = document.querySelectorAll("section[id]");
-const navItems = document.querySelectorAll(".nav-links a");
+function initGalleryLightbox() {
+  const items = document.querySelectorAll(".gallery-item");
+  const modal = document.getElementById("lightboxModal");
+  const modalImg = document.getElementById("lightboxImg");
+  const modalCaption = document.getElementById("lightboxCaption");
+  const closeBtn = document.getElementById("lightboxClose");
+  const prevBtn = document.getElementById("lightboxPrev");
+  const nextBtn = document.getElementById("lightboxNext");
 
-window.addEventListener("scroll",()=>{
-  let current = "";
-  sections.forEach(section=>{
-    // Skip hidden sections (their offsetTop is 0 but they are not the home/hero section)
-    if (section.getAttribute("id") !== "home" && section.offsetTop === 0) return;
-    
-    const sectionTop = section.offsetTop - 150;
-    if(window.scrollY >= sectionTop){
-      current = section.getAttribute("id");
+  if (!modal || !items.length) return;
+
+  let currentIndex = 0;
+  const imageList = Array.from(items).map(item => ({
+    src: item.dataset.src || item.querySelector("img").src,
+    caption: item.dataset.caption || item.querySelector("img").alt
+  }));
+
+  function openLightbox(index) {
+    currentIndex = index;
+    modalImg.src = imageList[currentIndex].src;
+    modalCaption.innerText = imageList[currentIndex].caption;
+    modal.classList.add("active");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeLightbox() {
+    modal.classList.remove("active");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % imageList.length;
+    openLightbox(currentIndex);
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
+    openLightbox(currentIndex);
+  }
+
+  items.forEach((item, index) => {
+    item.addEventListener("click", () => openLightbox(index));
+  });
+
+  if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
+  if (nextBtn) nextBtn.addEventListener("click", showNext);
+  if (prevBtn) prevBtn.addEventListener("click", showPrev);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (!modal.classList.contains("active")) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowRight") showNext();
+    if (e.key === "ArrowLeft") showPrev();
+  });
+}
+
+/*====================================================
+        10. FAQ ACCORDION
+====================================================*/
+function initFaqAccordion() {
+  const faqItems = document.querySelectorAll(".faq-item");
+
+  faqItems.forEach(item => {
+    const header = item.querySelector(".faq-header");
+    if (header) {
+      header.addEventListener("click", () => {
+        const isActive = item.classList.contains("active");
+
+        // Close other items
+        faqItems.forEach(other => {
+          other.classList.remove("active");
+          const otherHeader = other.querySelector(".faq-header");
+          if (otherHeader) otherHeader.setAttribute("aria-expanded", "false");
+        });
+
+        if (!isActive) {
+          item.classList.add("active");
+          header.setAttribute("aria-expanded", "true");
+        }
+      });
     }
   });
-
-  navItems.forEach(link=>{
-    link.classList.remove("active");
-    if(link.getAttribute("href") === "#"+current){
-      link.classList.add("active");
-    }
-  });
-});
-
+}
 
 /*====================================================
-        SHOPPING CART & KOT ORDER SYSTEM
+        11. RESERVATION FORM VALIDATION & SUBMIT
 ====================================================*/
-let cart = JSON.parse(localStorage.getItem("khandesh_cart")) || [];
+function initBookingForm() {
+  const bookingForm = document.getElementById("bookingForm");
+  const dateInput = document.getElementById("bookDate");
 
-// Cart DOM Elements
-const cartToggle = document.getElementById("cartToggle");
-const closeCart = document.getElementById("closeCart");
-const cartDrawer = document.getElementById("cartDrawer");
-const cartOverlay = document.getElementById("cartOverlay");
-const cartBadgeCount = document.getElementById("cartBadgeCount");
-const cartItemsList = document.getElementById("cartItemsList");
-const cartTotalPrice = document.getElementById("cartTotalPrice");
-const orderTypeSelect = document.getElementById("orderType");
-const tableNoGroup = document.getElementById("tableNoGroup");
-const tableNoSelect = document.getElementById("tableNo");
-const cartCheckoutForm = document.getElementById("cartCheckoutForm");
-
-// Drawer open/close
-if (cartToggle) {
-  cartToggle.addEventListener("click", () => {
-    cartDrawer.classList.add("open");
-    cartOverlay.classList.add("show");
-  });
-}
-
-const hideCart = () => {
-  cartDrawer.classList.remove("open");
-  cartOverlay.classList.remove("show");
-};
-
-if (closeCart) closeCart.addEventListener("click", hideCart);
-if (cartOverlay) cartOverlay.addEventListener("click", hideCart);
-
-// Show/Hide table selection based on dine-in/takeaway
-if (orderTypeSelect) {
-  orderTypeSelect.addEventListener("change", () => {
-    if (orderTypeSelect.value === "dine-in") {
-      tableNoGroup.style.display = "block";
-      tableNoSelect.required = true;
-    } else {
-      tableNoGroup.style.display = "none";
-      tableNoSelect.required = false;
-      tableNoSelect.value = "";
-    }
-  });
-}
-
-// Update Cart Badge and Display
-function updateCartUI() {
-  localStorage.setItem("khandesh_cart", JSON.stringify(cart));
-  
-  // Update badge count
-  const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
-  if (cartBadgeCount) {
-    cartBadgeCount.innerText = totalQty;
+  if (dateInput) {
+    // Set minimum date to today
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.setAttribute("min", today);
   }
 
-  // Populate Drawer List
-  if (!cartItemsList) return;
+  if (bookingForm) {
+    bookingForm.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-  if (cart.length === 0) {
-    cartItemsList.innerHTML = `
-      <div class="cart-empty-msg">
-        <i class="fa-solid fa-shopping-cart" style="font-size: 3rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
-        <p>Your cart is empty.</p>
-      </div>
-    `;
-    if (cartTotalPrice) cartTotalPrice.innerText = "₹0";
-    return;
-  }
+      const name = document.getElementById("bookName").value.trim();
+      const phone = document.getElementById("bookPhone").value.trim();
+      const date = document.getElementById("bookDate").value;
+      const time = document.getElementById("bookTime").value;
+      const guests = document.getElementById("bookGuests").value;
 
-  let listHtml = "";
-  let subtotal = 0;
-
-  cart.forEach((item, index) => {
-    subtotal += item.price * item.quantity;
-    listHtml += `
-      <div class="cart-item">
-        <img src="${item.image}" alt="${item.name}">
-        <div class="cart-item-details">
-          <h4>${item.name}</h4>
-          <span class="cart-item-price">₹${item.price}</span>
-          <div class="cart-item-qty">
-            <button class="qty-btn" onclick="adjustQty(${index}, -1)">-</button>
-            <span class="qty-val">${item.quantity}</span>
-            <button class="qty-btn" onclick="adjustQty(${index}, 1)">+</button>
-          </div>
-        </div>
-        <button class="remove-item-btn" onclick="removeFromCart(${index})">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
-      </div>
-    `;
-  });
-
-  cartItemsList.innerHTML = listHtml;
-  if (cartTotalPrice) cartTotalPrice.innerText = `₹${subtotal}`;
-}
-
-window.adjustQty = function(index, amount) {
-  cart[index].quantity += amount;
-  if (cart[index].quantity <= 0) {
-    cart.splice(index, 1);
-  }
-  updateCartUI();
-};
-
-window.removeFromCart = function(index) {
-  cart.splice(index, 1);
-  updateCartUI();
-};
-
-function showToast(message) {
-  let container = document.getElementById("toast-container");
-  if (!container) {
-    container = document.createElement("div");
-    container.id = "toast-container";
-    container.style.position = "fixed";
-    container.style.bottom = "240px"; // Placed clearly above the floating buttons
-    container.style.right = "25px";
-    container.style.zIndex = "2000";
-    container.style.display = "flex";
-    container.style.flexDirection = "column";
-    container.style.gap = "10px";
-    container.style.width = "min(90%, 320px)";
-    document.body.appendChild(container);
-  }
-
-  const toast = document.createElement("div");
-  toast.style.background = "linear-gradient(135deg, #160d08, #2a1a11)";
-  toast.style.color = "white";
-  toast.style.padding = "12px 20px";
-  toast.style.borderRadius = "12px";
-  toast.style.boxShadow = "0 8px 30px rgba(0,0,0,0.25)";
-  toast.style.borderLeft = "4px solid #d4af37";
-  toast.style.display = "flex";
-  toast.style.alignItems = "center";
-  toast.style.gap = "10px";
-  toast.style.fontSize = "0.85rem";
-  toast.style.fontWeight = "500";
-  toast.style.opacity = "0";
-  toast.style.transform = "translateX(50px)";
-  toast.style.transition = "all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55)";
-
-  toast.innerHTML = `
-    <i class="fa-solid fa-circle-check" style="color: #25D366; font-size: 1.1rem;"></i>
-    <span style="flex: 1;">${message}</span>
-  `;
-
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.style.opacity = "1";
-    toast.style.transform = "translateX(0)";
-  }, 10);
-
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transform = "translateX(50px)";
-    setTimeout(() => {
-      if (container.contains(toast)) {
-        container.removeChild(toast);
-      }
-    }, 300);
-  }, 2500);
-}
-
-window.addToCart = function(name, price, image) {
-  const existing = cart.find(item => item.name === name);
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({ name, price: Number(price), image, quantity: 1 });
-  }
-  updateCartUI();
-  
-  // Auto-open Cart Drawer so customer immediately sees added items
-  if (cartDrawer && cartOverlay) {
-    cartDrawer.classList.add("open");
-    cartOverlay.classList.add("show");
-  }
-
-  // Visual feedback: Show a Toast Notification
-  showToast(`Added: ${name} (₹${price})`);
-  
-  // Highlight cart button
-  if (cartToggle) {
-    cartToggle.style.transform = "scale(1.2)";
-    setTimeout(() => {
-      cartToggle.style.transform = "none";
-    }, 200);
-  }
-};
-
-/*====================================================
-        DYNAMIC MENU LOADER & RENDERER
-====================================================*/
-const menuGrid = document.getElementById("menuGrid");
-const menuLoading = document.getElementById("menuLoading");
-
-async function loadMenu(retryCount = 0) {
-  const maxRetries = 3;
-  
-  // Show skeleton loading shimmers on first attempt
-  if (retryCount === 0 && menuGrid) {
-    let skeletonHtml = "";
-    for (let i = 0; i < 4; i++) {
-      skeletonHtml += `
-        <div class="skeleton-card">
-          <div class="skeleton-img"></div>
-          <div class="skeleton-title"></div>
-          <div class="skeleton-text"></div>
-        </div>
-      `;
-    }
-    menuGrid.innerHTML = skeletonHtml;
-    menuGrid.style.display = "grid";
-    if (menuLoading) menuLoading.style.display = "none";
-  }
-
-  try {
-    const res = await fetch("/api/menu");
-    if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
-    const menuItems = await res.json();
-    
-    if (menuLoading) menuLoading.style.display = "none";
-    if (menuGrid) {
-      menuGrid.style.display = "grid";
-      
-      if (!menuItems.length) {
-        menuGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text);">No menu items found. Please run seed script first.</p>`;
+      if (!name || !phone || !date || !time || !guests) {
+        showToast("Please fill in all required fields.", "error");
         return;
       }
 
-      let gridHtml = "";
-      menuItems.forEach((item) => {
-        const badgeHtml = item.badge ? `<span class="badge ${item.badge === 'Chef Choice' ? 'new' : ''}">${item.badge}</span>` : "";
-        const tagHtml = item.tag ? `<span>🔥 ${item.tag}</span>` : `<span>⭐ ${item.rating || '4.7'}</span>`;
-        
-        gridHtml += `
-          <article class="menu-card" data-category="${item.category}">
-            <div class="menu-image">
-              <img src="${item.image}" alt="${item.name}">
-              ${badgeHtml}
-            </div>
-            <div class="menu-content">
-              <div class="title-row">
-                <h3>${item.name}</h3>
-                <span class="price">₹${item.price}</span>
-              </div>
-              <p>${item.description}</p>
-              <div class="food-info">
-                <span>🟢 Pure Veg</span>
-                ${tagHtml}
-              </div>
-              <button class="primary-btn" onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price}, '${item.image}')">Add to Cart</button>
-            </div>
-          </article>
-        `;
-      });
-
-      menuGrid.innerHTML = gridHtml;
-      
-      // Initialize filtering on the new cards
-      initializeMenuFilters();
-
-      // GSAP Entrance Animations for compact cards (instant staggered fade-in)
-      if (window.gsap) {
-        gsap.from(".menu-card", {
-          opacity: 0,
-          y: 20,
-          scale: 0.98,
-          duration: 0.4,
-          stagger: 0.03,
-          ease: "power1.out"
-        });
-      }
-
-      // Refresh ScrollTrigger to calculate correct offsets for lower sections
-      if (window.ScrollTrigger) {
-        ScrollTrigger.refresh();
-      }
-    }
-  } catch (err) {
-    console.warn(`Menu load attempt ${retryCount + 1} failed:`, err.message);
-    if (retryCount < maxRetries - 1) {
-      setTimeout(() => loadMenu(retryCount + 1), 1500);
-    } else {
-      if (menuGrid) {
-        menuGrid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px; background: #fff; border-radius: 16px; border: 1px dashed var(--primary);">
-            <i class="fa-solid fa-utensils" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
-            <h3 style="margin-bottom: 10px; color: var(--primary);">Unable to connect to live menu</h3>
-            <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text);">Server is waking up from sleep. Please click below to reload menu.</p>
-            <button class="primary-btn" onclick="loadMenu(0)">Retry Menu</button>
-          </div>
-        `;
-      }
-    }
-  }
-}
-
-// Menu category buttons filtering
-function initializeMenuFilters() {
-  const filterBtns = document.querySelectorAll(".menu-filter button");
-  
-  filterBtns.forEach(btn => {
-    // Clone and replace button to clear any old events
-    const newBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(newBtn, btn);
-
-    newBtn.addEventListener("click", () => {
-      // Set active button
-      document.querySelectorAll(".menu-filter button").forEach(b => b.classList.remove("active"));
-      newBtn.classList.add("active");
-
-      const filter = newBtn.dataset.filter;
-      const cards = document.querySelectorAll(".menu-card");
-      
-      cards.forEach(card => {
-        if (filter === "all" || card.dataset.category === filter) {
-          card.classList.remove("hide");
-        } else {
-          card.classList.add("hide");
-        }
-      });
-    });
-  });
-}
-
-// Initial loads
-document.addEventListener("DOMContentLoaded", () => {
-  loadMenu();
-  updateCartUI();
-  loadReviews();
-
-  // Initialize GSAP Animations for static sections
-  if (window.gsap && window.ScrollTrigger) {
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Hero section animations
-    gsap.from(".hero-content h1", { opacity: 0, x: -60, duration: 0.8, ease: "power2.out" });
-    gsap.from(".hero-content p", { opacity: 0, x: -40, duration: 0.8, delay: 0.2, ease: "power2.out" });
-    gsap.from(".hero-buttons", { opacity: 0, y: 30, duration: 0.6, delay: 0.4, ease: "power2.out" });
-    gsap.from(".hero-image img", { opacity: 0, scale: 0.95, duration: 1, delay: 0.2, ease: "power3.out" });
-
-    // About section fade-in
-    gsap.from(".about-content", {
-      scrollTrigger: {
-        trigger: ".about",
-        start: "top 75%",
-      },
-      opacity: 0,
-      y: 40,
-      duration: 0.8,
-      ease: "power2.out"
-    });
-
-    // Special Thali banner slide-in
-    gsap.from(".special-content", {
-      scrollTrigger: {
-        trigger: ".today-special",
-        start: "top 75%",
-      },
-      opacity: 0,
-      x: 60,
-      duration: 1,
-      ease: "power2.out"
-    });
-
-    // Reservation section fade-in
-    gsap.from(".reservation-content", {
-      scrollTrigger: {
-        trigger: ".reservation",
-        start: "top 75%",
-      },
-      opacity: 0,
-      x: -50,
-      duration: 0.8,
-      ease: "power2.out"
-    });
-
-    gsap.from(".booking-form", {
-      scrollTrigger: {
-        trigger: ".reservation",
-        start: "top 75%",
-      },
-      opacity: 0,
-      x: 50,
-      duration: 0.8,
-      ease: "power2.out"
+      showToast(`Thank you, ${name}! Your table reservation for ${guests} on ${date} at ${time} is confirmed.`, "success", 5000);
+      bookingForm.reset();
     });
   }
-});
-
-/*====================================================
-        CHECKOUT & KOT RECEIPT SUBMISSION
-====================================================*/
-if (cartCheckoutForm) {
-  cartCheckoutForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (cart.length === 0) {
-      alert("Your cart is empty! Add some delicious dishes first.");
-      return;
-    }
-
-    const name = document.getElementById("custName").value.trim();
-    const phone = document.getElementById("custPhone").value.trim();
-    const type = document.getElementById("orderType").value;
-    const tableNo = document.getElementById("tableNo").value;
-    if (!cart || cart.length === 0) {
-      alert("Your cart is empty! Please add dishes to your cart before placing an order.");
-      return;
-    }
-
-    if (type === "dine-in" && !tableNo) {
-      alert("Please select a table number (Table 1-15) for Dine-In.");
-      return;
-    }
-
-    // Validate 10-digit Indian phone number
-    const cleanPhone = phone.replace(/\D/g, "");
-    if (cleanPhone.length !== 10) {
-      alert("Please enter a valid 10-digit mobile number.");
-      return;
-    }
-
-    const orderData = {
-      name,
-      phone: cleanPhone,
-      type,
-      tableNo,
-      items: cart,
-      notes
-    };
-
-    try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData)
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to submit order");
-      }
-
-      const result = await res.json();
-      const order = result.order;
-
-      // Hide Cart Drawer
-      hideCart();
-
-      // Show Receipt / KOT Ticket popup
-      showKotReceipt(order);
-
-      // Clear local cart
-      cart = [];
-      updateCartUI();
-      cartCheckoutForm.reset();
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Something went wrong. Please check your backend.");
-    }
-  });
-}
-
-function showKotReceipt(order) {
-  document.getElementById("recKOT").innerText = order.kotNo;
-  
-  // Format Date
-  const dateObj = new Date(order.createdAt);
-  const formattedDate = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  document.getElementById("recDate").innerText = formattedDate;
-
-  document.getElementById("recType").innerText = order.type === "dine-in" ? "DINE-IN" : "TAKEAWAY (PARCEL)";
-  
-  const tableContainer = document.getElementById("recTableContainer");
-  if (order.type === "dine-in") {
-    tableContainer.style.display = "block";
-    document.getElementById("recTable").innerText = order.tableNo;
-  } else {
-    tableContainer.style.display = "none";
-  }
-
-  document.getElementById("recCustName").innerText = order.name;
-  document.getElementById("recCustPhone").innerText = order.phone;
-
-  // Render items table
-  const itemsBody = document.getElementById("recItemsBody");
-  let itemsHtml = "";
-  order.items.forEach(item => {
-    itemsHtml += `
-      <tr style="border-bottom: 1px dotted #ccc;">
-        <td style="padding: 6px 0; text-align: left;">${item.name}</td>
-        <td style="padding: 6px 0; text-align: right;">x${item.quantity}</td>
-        <td style="padding: 6px 0; text-align: right;">₹${item.price * item.quantity}</td>
-      </tr>
-    `;
-  });
-  itemsBody.innerHTML = itemsHtml;
-  document.getElementById("recTotal").innerText = `₹${order.totalAmount}`;
-
-  // Instructions
-  const instContainer = document.getElementById("recInstructionsContainer");
-  if (order.notes) {
-    instContainer.style.display = "block";
-    document.getElementById("recInstructions").innerText = order.notes;
-  } else {
-    instContainer.style.display = "none";
-  }
-
-  // Construct WhatsApp Order Message
-  const waText = encodeURIComponent(
-    `*🏨 HOTEL KHANDESH DARBAR - KOT ORDER*\n` +
-    `-----------------------------------\n` +
-    `*KOT No:* ${order.kotNo}\n` +
-    `*Order Type:* ${order.type === 'dine-in' ? 'Dine-In (' + order.tableNo + ')' : 'Takeaway (Parcel)'}\n` +
-    `*Customer:* ${order.name} (${order.phone})\n` +
-    `-----------------------------------\n` +
-    `*ORDERED ITEMS:*\n` +
-    order.items.map(i => `• ${i.name} x ${i.quantity} = ₹${i.price * i.quantity}`).join('\n') + `\n` +
-    `-----------------------------------\n` +
-    `*TOTAL BILL:* ₹${order.totalAmount}\n` +
-    (order.notes ? `*Special Note:* ${order.notes}\n` : '') +
-    `-----------------------------------\n` +
-    `🟢 100% Pure Veg | Thank you!`
-  );
-  const waLink = `https://wa.me/919767977156?text=${waText}`;
-
-  // Inject or update WhatsApp button in KOT receipt modal
-  let waBtn = document.getElementById("recWhatsappBtn");
-  if (!waBtn) {
-    waBtn = document.createElement("a");
-    waBtn.id = "recWhatsappBtn";
-    waBtn.className = "primary-btn whatsapp-order-btn";
-    waBtn.target = "_blank";
-    waBtn.style.marginTop = "15px";
-    waBtn.style.textDecoration = "none";
-    const modalBox = document.querySelector("#kotReceiptModal > div");
-    if (modalBox) modalBox.appendChild(waBtn);
-  }
-  waBtn.href = waLink;
-  waBtn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Send KOT to Restaurant WhatsApp`;
-
-  // Display Modal
-  const modal = document.getElementById("kotReceiptModal");
-  if (modal) {
-    modal.style.display = "flex";
-  }
 }
 
 /*====================================================
-        MONTHLY MESS SUBSCRIPTION LOGIC
+        12. NEWSLETTER FORM
 ====================================================*/
-window.openMessModal = function(planName, price) {
-  document.getElementById("messPlanName").value = `${planName} - ₹${price}`;
-  const modal = document.getElementById("messSubscriptionModal");
-  if (modal) modal.style.display = "flex";
-};
+function initNewsletterForm() {
+  const newsletterForm = document.getElementById("newsletterForm");
 
-window.closeMessModal = function() {
-  const modal = document.getElementById("messSubscriptionModal");
-  if (modal) modal.style.display = "none";
-};
-
-const messForm = document.getElementById("messSubscriptionForm");
-if (messForm) {
-  messForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const name = document.getElementById("messCustName").value.trim();
-    const phone = document.getElementById("messCustPhone").value.trim();
-    const serviceType = document.getElementById("messServiceType").value;
-    const address = document.getElementById("messAddress").value.trim();
-    const plan = document.getElementById("messPlanName").value;
-
-    const cleanPhone = phone.replace(/\D/g, "");
-    if (cleanPhone.length !== 10) {
-      alert("Please enter a valid 10-digit mobile number.");
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/mess-subscriptions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone: cleanPhone, plan, serviceType, address })
-      });
-
-      if (!res.ok) throw new Error("Failed to subscribe mess plan");
-
-      closeMessModal();
-      showToast("🎉 Mess Subscription Request Sent Successfully!");
-      alert(`Thank you ${name}! Your Mess Subscription request has been received. Our manager will call you shortly on ${cleanPhone}.`);
-      messForm.reset();
-    } catch (err) {
-      alert("Error booking mess subscription: " + err.message);
-    }
-  });
-}
-
-/*====================================================
-        UPI ONLINE PAYMENT MODAL LOGIC
-====================================================*/
-window.openUpiModal = function(amount) {
-  document.getElementById("upiModalAmount").innerText = `₹${amount}`;
-  const upiUrl = `upi://pay?pa=9767977156@ybl&pn=Hotel%20Khandesh%20Darbar&am=${amount}&cu=INR`;
-  document.getElementById("upiQrImage").src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
-  document.getElementById("gpayBtn").href = upiUrl;
-  document.getElementById("phonepeBtn").href = upiUrl;
-  
-  const modal = document.getElementById("upiPaymentModal");
-  if (modal) modal.style.display = "flex";
-};
-
-window.closeUpiModal = function() {
-  const modal = document.getElementById("upiPaymentModal");
-  if (modal) modal.style.display = "none";
-};
-
-window.confirmUpiPayment = function() {
-  closeUpiModal();
-  showToast("Payment Marked! Submitting order...");
-};
-
-/*====================================================
-        TABLE BOOKING FORM SUBMISSION
-====================================================*/
-const bookingFormSubmit = document.getElementById("tableBookingForm");
-if (bookingFormSubmit) {
-  bookingFormSubmit.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(bookingFormSubmit);
-    const bookingData = {
-      name: formData.get("name"),
-      phone: formData.get("phone"),
-      email: formData.get("email"),
-      date: formData.get("date"),
-      time: formData.get("time"),
-      guests: formData.get("guests"),
-      notes: formData.get("notes")
-    };
-
-    try {
-      const res = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bookingData)
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to place booking");
-      }
-
-      alert("Thank you! Your table booking request has been successfully sent to Hotel Khandesh Darbar.");
-      bookingFormSubmit.reset();
-    } catch (err) {
-      console.error(err);
-      alert("Error submitting table reservation. Please call directly.");
-    }
-  });
-}
-
-/*====================================================
-        NEWSLETTER FORM SUBMISSION
-====================================================*/
-const newsletterFormSubmit = document.getElementById("newsletterSubscriptionForm");
-if (newsletterFormSubmit) {
-  newsletterFormSubmit.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = newsletterFormSubmit.querySelector('input[type="email"]').value;
-
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to subscribe");
-      }
-
-      alert("Thanks for subscribing! Watch your email for our latest Khandeshi offers.");
-      newsletterFormSubmit.reset();
-    } catch (err) {
-      alert(err.message || "Error subscribing to newsletter.");
-    }
-  });
-}
-
-/*====================================================
-        MONTHLY MESS FORM SUBMISSION
-====================================================*/
-const messSubscriptionForm = document.getElementById("messSubscriptionForm");
-if (messSubscriptionForm) {
-  messSubscriptionForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(messSubscriptionForm);
-    const messData = {
-      name: formData.get("name"),
-      phone: formData.get("phone"),
-      plan: formData.get("plan"),
-      timing: formData.get("timing"),
-      startDate: formData.get("startDate"),
-      notes: formData.get("notes")
-    };
-
-    try {
-      const res = await fetch("/api/mess-subscriptions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(messData)
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to submit subscription");
-      }
-
-      showToast("Subscription Request Sent! Manager will contact you.");
-      messSubscriptionForm.reset();
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Error submitting mess subscription. Please call directly.");
-    }
-  });
-}
-
-/*====================================================
-        DYNAMIC REVIEWS LOADER
-====================================================*/
-async function loadReviews() {
-  const reviewGrid = document.querySelector(".review-grid");
-  if (!reviewGrid) return;
-
-  try {
-    const res = await fetch("/api/reviews");
-    if (!res.ok) throw new Error("Could not load reviews");
-    const reviews = await res.json();
-    
-    // Filter approved reviews only
-    const approvedReviews = reviews.filter(r => r.approved);
-    
-    if (approvedReviews.length > 0) {
-      let reviewsHtml = "";
-      approvedReviews.forEach(r => {
-        const stars = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
-        const avatarInitial = r.name.charAt(0).toUpperCase();
-        reviewsHtml += `
-          <div class="review-card">
-            <div class="review-top">
-              <div class="avatar">${avatarInitial}</div>
-              <div>
-                <h4>${r.name}</h4>
-                <span>${r.role || 'Google Review'}</span>
-              </div>
-            </div>
-            <div class="stars">${stars}</div>
-            <p>${r.text}</p>
-          </div>
-        `;
-      });
-      reviewGrid.innerHTML = reviewsHtml;
-    }
-  } catch (err) {
-    console.error("Error rendering reviews:", err);
-  }
-}
-
-/*====================================================
-        MONTHLY MESS OVERLAY MODAL TOGGLER
-====================================================*/
-const messModal = document.getElementById("messModal");
-const closeMessModalBtn = document.getElementById("closeMessModal");
-const messPlanNavLinks = document.querySelectorAll('a[href="#mess"]');
-
-if (messModal) {
-  messPlanNavLinks.forEach(link => {
-    link.addEventListener("click", (e) => {
+  if (newsletterForm) {
+    newsletterForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      
-      // Close mobile menu if open
-      const mobileNav = document.getElementById("mobileNav");
-      const menuBtn = document.querySelector(".menu-btn");
-      if (mobileNav && mobileNav.classList.contains("open")) {
-        mobileNav.classList.remove("open");
-        if (menuBtn) menuBtn.classList.remove("open");
+      const emailInput = document.getElementById("newsletterEmail");
+
+      if (emailInput && emailInput.value) {
+        showToast("Subscribed successfully! Watch your inbox for festival discounts.", "success");
+        newsletterForm.reset();
       }
-      
-      // Display the overlay container
-      messModal.style.display = "flex";
-      
-      // Trigger GSAP zoom/fade animations
-      if (window.gsap) {
-        gsap.fromTo(messModal, 
-          { opacity: 0 }, 
-          { opacity: 1, duration: 0.3 }
-        );
-        gsap.fromTo(messModal.querySelector("div"), 
-          { scale: 0.9, y: 30 }, 
-          { scale: 1, y: 0, duration: 0.4, ease: "back.out(1.1)" }
-        );
+    });
+  }
+}
+
+/*====================================================
+        13. SHOPPING CART & KOT RECEIPT SYSTEM
+====================================================*/
+let cart = JSON.parse(localStorage.getItem("khandesh_cart")) || [];
+
+function initShoppingCart() {
+  const cartToggle = document.getElementById("cartToggle");
+  const cartDrawer = document.getElementById("cartDrawer");
+  const cartOverlay = document.getElementById("cartOverlay");
+  const closeCart = document.getElementById("closeCart");
+  const addToCartBtns = document.querySelectorAll(".add-to-cart-btn");
+  const orderTypeSelect = document.getElementById("orderType");
+  const tableNoGroup = document.getElementById("tableNoGroup");
+  const checkoutForm = document.getElementById("cartCheckoutForm");
+  const kotModal = document.getElementById("kotReceiptModal");
+  const closeKotBtn = document.getElementById("closeKotBtn");
+
+  updateCartUI();
+
+  // Open & Close Cart
+  function openCart() {
+    if (cartDrawer && cartOverlay) {
+      cartDrawer.classList.add("active");
+      cartOverlay.classList.add("active");
+    }
+  }
+
+  function closeCartDrawer() {
+    if (cartDrawer && cartOverlay) {
+      cartDrawer.classList.remove("active");
+      cartOverlay.classList.remove("active");
+    }
+  }
+
+  if (cartToggle) cartToggle.addEventListener("click", openCart);
+  if (closeCart) closeCart.addEventListener("click", closeCartDrawer);
+  if (cartOverlay) cartOverlay.addEventListener("click", closeCartDrawer);
+
+  // Add to cart buttons
+  addToCartBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
+      const name = btn.dataset.name;
+      const price = parseFloat(btn.dataset.price);
+
+      const existingItem = cart.find(item => item.id === id);
+      if (existingItem) {
+        existingItem.qty += 1;
+      } else {
+        cart.push({ id, name, price, qty: 1 });
       }
+
+      saveCart();
+      updateCartUI();
+      showToast(`Added "${name}" to cart!`, "success", 2000);
     });
   });
 
-  const closeMess = () => {
-    if (window.gsap) {
-      gsap.to(messModal.querySelector("div"), {
-        scale: 0.9,
-        y: 25,
-        duration: 0.25,
-        ease: "power2.in",
-        onComplete: () => {
-          gsap.to(messModal, {
-            opacity: 0,
-            duration: 0.15,
-            onComplete: () => {
-              messModal.style.display = "none";
-            }
-          });
-        }
-      });
-    } else {
-      messModal.style.display = "none";
-    }
-  };
-
-  if (closeMessModalBtn) {
-    closeMessModalBtn.addEventListener("click", closeMess);
+  // Toggle Table number field based on Order Type
+  if (orderTypeSelect && tableNoGroup) {
+    orderTypeSelect.addEventListener("change", () => {
+      if (orderTypeSelect.value === "takeaway") {
+        tableNoGroup.style.display = "none";
+      } else {
+        tableNoGroup.style.display = "block";
+      }
+    });
   }
 
-  // Close modal when clicking outside contents
-  messModal.addEventListener("click", (e) => {
-    if (e.target === messModal) {
-      closeMess();
+  // Handle Checkout & KOT Generation
+  if (checkoutForm) {
+    checkoutForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (cart.length === 0) {
+        showToast("Your cart is empty. Add items before placing an order.", "error");
+        return;
+      }
+
+      const orderType = document.getElementById("orderType").value;
+      const tableNo = document.getElementById("tableNo").value;
+      const custName = document.getElementById("custName").value.trim();
+      const custPhone = document.getElementById("custPhone").value.trim();
+      const orderNotes = document.getElementById("orderNotes").value.trim();
+
+      if (orderType === "dine-in" && !tableNo) {
+        showToast("Please select your Table Number for Dine-In.", "error");
+        return;
+      }
+
+      // Generate Receipt Data
+      const kotNumber = "KOT-" + Math.floor(1000 + Math.random() * 9000);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      document.getElementById("recKOT").innerText = kotNumber;
+      document.getElementById("recDate").innerText = dateStr;
+      document.getElementById("recType").innerText = orderType === "dine-in" ? "Dine-In" : "Takeaway";
+      document.getElementById("recTableContainer").style.display = orderType === "dine-in" ? "block" : "none";
+      document.getElementById("recTable").innerText = tableNo || "N/A";
+      document.getElementById("recCustName").innerText = custName;
+      document.getElementById("recCustPhone").innerText = custPhone;
+
+      // Populate Items Table
+      const recBody = document.getElementById("recItemsBody");
+      let totalAmount = 0;
+      recBody.innerHTML = "";
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        totalAmount += itemTotal;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="padding: 4px 0;">${item.name}</td>
+          <td style="text-align: center; padding: 4px 0;">x${item.qty}</td>
+          <td style="text-align: right; padding: 4px 0;">₹${itemTotal}</td>
+        `;
+        recBody.appendChild(tr);
+      });
+
+      document.getElementById("recTotal").innerText = `₹${totalAmount}`;
+      const instContainer = document.getElementById("recInstructionsContainer");
+      if (orderNotes) {
+        instContainer.style.display = "block";
+        document.getElementById("recInstructions").innerText = orderNotes;
+      } else {
+        instContainer.style.display = "none";
+      }
+
+      // Close cart drawer & show KOT modal
+      closeCartDrawer();
+      if (kotModal) {
+        kotModal.classList.add("active");
+        kotModal.setAttribute("aria-hidden", "false");
+      }
+
+      // Reset Cart
+      cart = [];
+      saveCart();
+      updateCartUI();
+      checkoutForm.reset();
+      showToast("Order placed successfully! KOT generated.", "success");
+    });
+  }
+
+  if (closeKotBtn && kotModal) {
+    closeKotBtn.addEventListener("click", () => {
+      kotModal.classList.remove("active");
+      kotModal.setAttribute("aria-hidden", "true");
+    });
+  }
+}
+
+function saveCart() {
+  localStorage.setItem("khandesh_cart", JSON.stringify(cart));
+}
+
+function updateCartUI() {
+  const badgeCount = document.getElementById("cartBadgeCount");
+  const cartList = document.getElementById("cartItemsList");
+  const totalPriceEl = document.getElementById("cartTotalPrice");
+
+  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+  if (badgeCount) badgeCount.innerText = totalCount;
+  if (totalPriceEl) totalPriceEl.innerText = `₹${totalPrice}`;
+
+  if (!cartList) return;
+
+  if (cart.length === 0) {
+    cartList.innerHTML = `
+      <div style="text-align: center; padding: 40px 10px; color: var(--text-muted);">
+        <i class="fa-solid fa-shopping-cart" style="font-size: 3rem; margin-bottom: 12px; display: block; color: var(--border-color);"></i>
+        <p>Your cart is empty.</p>
+      </div>
+    `;
+    return;
+  }
+
+  cartList.innerHTML = "";
+  cart.forEach((item, index) => {
+    const row = document.createElement("div");
+    row.className = "cart-item-row";
+    row.innerHTML = `
+      <div class="cart-item-info">
+        <h4>${item.name}</h4>
+        <p>₹${item.price} x ${item.qty} = ₹${item.price * item.qty}</p>
+      </div>
+      <div class="cart-item-qty">
+        <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+        <span>${item.qty}</span>
+        <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+      </div>
+    `;
+    cartList.appendChild(row);
+  });
+}
+
+// Global scope for onclick handlers
+window.updateQty = function(index, delta) {
+  if (cart[index]) {
+    cart[index].qty += delta;
+    if (cart[index].qty <= 0) {
+      cart.splice(index, 1);
+    }
+    saveCart();
+    updateCartUI();
+  }
+};
+
+/*====================================================
+        14. BACK TO TOP BUTTON
+====================================================*/
+function initBackToTop() {
+  const backTop = document.getElementById("backToTop");
+  if (!backTop) return;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 400) {
+      backTop.classList.add("show");
+    } else {
+      backTop.classList.remove("show");
     }
   });
+
+  backTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
+/*====================================================
+        15. ACTIVE NAV LINK ON SCROLL
+====================================================*/
+function initActiveNavHighlight() {
+  const sections = document.querySelectorAll("section[id]");
+  const navItems = document.querySelectorAll(".nav-links a");
+
+  window.addEventListener("scroll", () => {
+    let current = "";
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 140;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute("id");
+      }
+    });
+
+    navItems.forEach(link => {
+      link.classList.remove("active");
+      if (link.getAttribute("href") === "#" + current) {
+        link.classList.add("active");
+      }
+    });
+  });
+}
+
+/*====================================================
+        16. UNIVERSAL TOAST NOTIFICATION UTILITY
+====================================================*/
+function showToast(message, type = "success", duration = 3500) {
+  const toastContainer = document.getElementById("toastContainer");
+  if (!toastContainer) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+
+  const iconClass = type === "success" ? "fa-circle-check" : type === "error" ? "fa-circle-exclamation" : "fa-circle-info";
+  toast.innerHTML = `
+    <i class="fa-solid ${iconClass}"></i>
+    <span>${message}</span>
+  `;
+
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = "slideOutRight 0.35s ease forwards";
+    setTimeout(() => {
+      toast.remove();
+    }, 350);
+  }, duration);
 }
