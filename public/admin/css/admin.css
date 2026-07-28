@@ -132,24 +132,38 @@ a {
 .admin-layout {
   display: flex;
   min-height: 100vh;
+  position: relative;
 }
 
-/* Sidebar */
+/* Fixed Sticky Sidebar */
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 260px;
+  height: 100vh;
+  overflow-y: auto;
   background: var(--dark-sidebar);
   color: white;
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  z-index: 100;
+  border-right: 2px solid rgba(212, 175, 55, 0.2);
+}
+
+.main-content {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
+  background-color: var(--light-bg);
 }
 
 .sidebar-logo {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
