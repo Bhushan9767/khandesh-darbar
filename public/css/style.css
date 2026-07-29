@@ -701,33 +701,52 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .about-features {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
   margin: 25px 0 32px;
 }
 
 .feature-item {
   display: flex;
   gap: 14px;
-  align-items: flex-start;
+  align-items: center;
+  background: var(--bg-cream);
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(165,42,42,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.feature-item i {
-  font-size: 1.5rem;
+.feature-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: #FFF3EC;
   color: var(--primary);
-  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
 }
 
 .feature-item h4 {
-  font-size: 0.98rem;
-  margin-bottom: 4px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  margin-bottom: 2px;
   color: var(--dark);
 }
 
 .feature-item p {
-  font-size: 0.83rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   margin: 0;
+  line-height: 1.4;
 }
 
 /*====================================================
