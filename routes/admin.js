@@ -73,6 +73,50 @@ router.get("/me", (req, res) => {
   res.json(req.admin);
 });
 
+// Change Admin Email & Password
+router.put("/change-password", async (req, res) => {
+  try {
+    const { currentPassword, newEmail, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Current password and new password are required." });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "New password must be at least 6 characters long." });
+    }
+
+    const admin = await Admin.findById(req.admin.id).select("+password");
+    if (!admin) {
+      return res.status(404).json({ message: "Admin account not found." });
+    }
+
+    const bcrypt = require("bcryptjs");
+    let isMatch = false;
+    if (typeof admin.comparePassword === "function") {
+      isMatch = await admin.comparePassword(currentPassword);
+    } else {
+      isMatch = await bcrypt.compare(currentPassword, admin.password);
+    }
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect current password." });
+    }
+
+    if (newEmail && newEmail.trim()) {
+      admin.email = newEmail.trim().toLowerCase();
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    admin.password = await bcrypt.hash(newPassword, salt);
+
+    await admin.save();
+
+    res.json({ message: "Admin credentials updated successfully! Please log in again." });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating credentials", error: err.message });
+  }
+});
+
 // Get Admin Stats Dashboard
 router.get("/stats", async (req, res) => {
   try {

@@ -1047,6 +1047,68 @@ if (imageUploadInput && menuItemImage) {
 }
 
 /*====================================================
+        CHANGE PASSWORD & CREDENTIALS
+====================================================*/
+const openPasswordModalBtn = document.getElementById("openPasswordModalBtn");
+const topOpenPasswordBtn = document.getElementById("topOpenPasswordBtn");
+const closePasswordModal = document.getElementById("closePasswordModal");
+const changePasswordModal = document.getElementById("changePasswordModal");
+const changePasswordForm = document.getElementById("changePasswordForm");
+
+if (openPasswordModalBtn) {
+  openPasswordModalBtn.addEventListener("click", () => {
+    if (currentAdmin && document.getElementById("changeNewEmail")) {
+      document.getElementById("changeNewEmail").value = currentAdmin.email || "";
+    }
+    if (changePasswordModal) changePasswordModal.style.display = "flex";
+  });
+}
+
+if (topOpenPasswordBtn) {
+  topOpenPasswordBtn.addEventListener("click", () => {
+    if (currentAdmin && document.getElementById("changeNewEmail")) {
+      document.getElementById("changeNewEmail").value = currentAdmin.email || "";
+    }
+    if (changePasswordModal) changePasswordModal.style.display = "flex";
+  });
+}
+
+if (closePasswordModal) {
+  closePasswordModal.addEventListener("click", () => {
+    if (changePasswordModal) changePasswordModal.style.display = "none";
+  });
+}
+
+if (changePasswordForm) {
+  changePasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const currentPassword = document.getElementById("changeCurrentPassword").value.trim();
+    const newEmail = document.getElementById("changeNewEmail").value.trim();
+    const newPassword = document.getElementById("changeNewPassword").value.trim();
+    const confirmPassword = document.getElementById("changeConfirmPassword").value.trim();
+
+    if (newPassword !== confirmPassword) {
+      return alert("New password and confirm password do not match!");
+    }
+
+    try {
+      const res = await adminFetch("/change-password", {
+        method: "PUT",
+        body: JSON.stringify({ currentPassword, newEmail, newPassword })
+      });
+
+      alert(res.message || "Credentials updated! Please log in with your new password.");
+      if (changePasswordModal) changePasswordModal.style.display = "none";
+      changePasswordForm.reset();
+      
+      if (logoutBtn) logoutBtn.click();
+    } catch (err) {
+      alert(err.message || "Failed to update credentials.");
+    }
+  });
+}
+
+/*====================================================
         INITIALISATION ENTRYPOINT
 ====================================================*/
 checkAuth();
