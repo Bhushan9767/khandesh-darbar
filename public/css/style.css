@@ -2314,4 +2314,107 @@ footer ul li a:hover {
     gap: 12px !important;
     text-align: center !important;
   }
+
+  /* Food Gallery Mobile Horizontal Swipe Slider */
+  .gallery-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 15px !important;
+    padding: 5px 4px 20px 4px !important;
+    scroll-behavior: smooth;
+  }
+
+  .gallery-item {
+    flex: 0 0 80% !important;
+    min-width: 270px !important;
+    scroll-snap-align: center !important;
+    border-radius: 14px !important;
+    overflow: hidden;
+  }
+
+  .gallery-item img {
+    height: 220px !important;
+    object-fit: cover !important;
+    width: 100% !important;
+  }
+
+  /* Why Choose Us Mobile Swipe Slider */
+  .why-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 15px !important;
+    padding: 5px 4px 18px 4px !important;
+    scroll-behavior: smooth;
+  }
+
+  .why-card {
+    flex: 0 0 78% !important;
+    min-width: 240px !important;
+    scroll-snap-align: center !important;
+    border-radius: 14px !important;
+  }
+
+  /* Facilities Mobile Swipe Slider */
+  .facilities-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 15px !important;
+    padding: 5px 4px 18px 4px !important;
+    scroll-behavior: smooth;
+  }
+
+  .facility-card {
+    flex: 0 0 78% !important;
+    min-width: 240px !important;
+    scroll-snap-align: center !important;
+    border-radius: 14px !important;
+  }
+
+  /* Customer Reviews Mobile Swipe Slider */
+  .review-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding: 5px 4px 20px 4px !important;
+    scroll-behavior: smooth;
+  }
+
+  .review-card {
+    flex: 0 0 85% !important;
+    min-width: 270px !important;
+    scroll-snap-align: center !important;
+    border-radius: 16px !important;
+  }
+
+  /* Shared Custom Golden Scrollbars */
+  .gallery-grid::-webkit-scrollbar,
+  .why-grid::-webkit-scrollbar,
+  .facilities-grid::-webkit-scrollbar,
+  .review-grid::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .gallery-grid::-webkit-scrollbar-track,
+  .why-grid::-webkit-scrollbar-track,
+  .facilities-grid::-webkit-scrollbar-track,
+  .review-grid::-webkit-scrollbar-track {
+    background: #f1e9dd;
+    border-radius: 10px;
+  }
+
+  .gallery-grid::-webkit-scrollbar-thumb,
+  .why-grid::-webkit-scrollbar-thumb,
+  .facilities-grid::-webkit-scrollbar-thumb,
+  .review-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--primary), var(--gold));
+    border-radius: 10px;
+  }
 }
