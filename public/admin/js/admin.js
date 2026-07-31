@@ -1109,6 +1109,40 @@ if (changePasswordForm) {
 }
 
 /*====================================================
+        MOBILE NAVIGATION DRAWER TOGGLE
+====================================================*/
+const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+const adminSidebar = document.getElementById("adminSidebar");
+const mobileSidebarBackdrop = document.getElementById("mobileSidebarBackdrop");
+
+function closeMobileSidebar() {
+  if (adminSidebar) adminSidebar.classList.remove("mobile-open");
+  if (mobileSidebarBackdrop) mobileSidebarBackdrop.classList.remove("active");
+}
+
+if (mobileMenuToggle) {
+  mobileMenuToggle.addEventListener("click", () => {
+    if (adminSidebar) adminSidebar.classList.toggle("mobile-open");
+    if (mobileSidebarBackdrop) mobileSidebarBackdrop.classList.toggle("active");
+  });
+}
+
+if (mobileSidebarBackdrop) {
+  mobileSidebarBackdrop.addEventListener("click", closeMobileSidebar);
+}
+
+// Auto close sidebar when a menu item is tapped on mobile
+if (typeof sidebarItems !== "undefined") {
+  sidebarItems.forEach(item => {
+    item.addEventListener("click", () => {
+      if (window.innerWidth <= 992) {
+        closeMobileSidebar();
+      }
+    });
+  });
+}
+
+/*====================================================
         INITIALISATION ENTRYPOINT
 ====================================================*/
 checkAuth();
