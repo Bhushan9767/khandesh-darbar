@@ -804,11 +804,11 @@ function init3DCoverflow() {
     }, { passive: true });
   }
 
-  // Continuous Auto-play
+  // Slow & Relaxed Continuous Auto-play (5.0 Seconds)
   setInterval(() => {
     activeIndex = (activeIndex + 1) % total;
     updateCoverflow();
-  }, 3200);
+  }, 5000);
 
   updateCoverflow();
 }

@@ -410,79 +410,86 @@
   MENU SECTION WITH LIVE SEARCH & FILTERS
   ===================================-->
   <!--==================================
-  OUR SPECIALITIES - SIGNATURE DISHES
+  FOOD GALLERY WITH 3D COVERFLOW
   ===================================-->
-  <section class="specialities section" id="specialities" style="background: linear-gradient(180deg, #ffffff 0%, rgba(165,42,42,0.03) 100%);">
+  <section class="gallery section" id="gallery">
     <div class="container">
+
       <div class="section-heading">
-        <span>Our Specialities</span>
-        <h2>Signature Dishes You Will Love</h2>
-        <p>Discover our handcrafted Khandeshi specialties made with traditional family recipes and authentic spices.</p>
+        <span>Food Gallery</span>
+        <h2>Every Dish Tells A Flavorful Story</h2>
+        <p>Click any photo to preview in high resolution.</p>
       </div>
 
-      <div class="specialities-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; margin-top: 30px;">
-        
-        <div class="speciality-card" style="background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.3s ease;">
-          <div style="position: relative; overflow: hidden; height: 210px;">
-            <img src="images/bharithbhakari.jpg" alt="Khandeshi Bharit Puri" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="badge" style="position: absolute; top: 15px; left: 15px; background: var(--secondary); color: #fff; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;">Bestseller</span>
-          </div>
-          <div style="padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; margin: 0; color: var(--primary);">Khandeshi Bharit Puri</h3>
-              <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">₹140</span>
+      <!-- 3D Perspective Coverflow Carousel -->
+      <div class="coverflow-wrapper">
+        <button class="coverflow-nav left" id="coverflowPrev" aria-label="Previous Photo"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="coverflow-carousel" id="coverflowCarousel">
+          
+          <div class="coverflow-card-container" data-index="0" data-src="images/thali1.jpeg" data-caption="Special Khandeshi Thali Feast">
+            <div class="coverflow-card">
+              <img src="images/thali1.jpeg" alt="Special Khandeshi Thali Feast" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Special Khandeshi Thali Feast</h3>
+                <p>Authentic 100% Pure Veg Royal Feast</p>
+              </div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Puri (5 Pcs), Baingan Bharit (1 Vaati), Curd Raita & Salad.</p>
-            <button class="primary-btn add-to-cart-btn" data-id="1" data-name="Khandeshi Bharit Puri" data-price="140" style="width: 100%; padding: 10px; border-radius: 8px;">Order Now</button>
           </div>
-        </div>
 
-        <div class="speciality-card" style="background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.3s ease;">
-          <div style="position: relative; overflow: hidden; height: 210px;">
-            <img src="images/thali5.jpeg" alt="Shev Bhaji" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="badge" style="position: absolute; top: 15px; left: 15px; background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;">Popular</span>
-          </div>
-          <div style="padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; margin: 0; color: var(--primary);">Shev Bhaji</h3>
-              <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">₹160</span>
+          <div class="coverflow-card-container" data-index="1" data-src="images/thali6.jpeg" data-caption="Authentic Bharit Puri">
+            <div class="coverflow-card">
+              <img src="images/thali6.jpeg" alt="Authentic Bharit Puri" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Authentic Bharit Puri</h3>
+                <p>Khandeshi Brinjal Bharit with Soft Hot Puris</p>
+              </div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Spicy Khandeshi Shev Bhaji, Rice, 2 Chapatis / 1 Bhakri.</p>
-            <button class="primary-btn add-to-cart-btn" data-id="8" data-name="Shev Bhaji Thali" data-price="160" style="width: 100%; padding: 10px; border-radius: 8px;">Order Now</button>
           </div>
-        </div>
 
-        <div class="speciality-card" style="background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.3s ease;">
-          <div style="position: relative; overflow: hidden; height: 210px;">
-            <img src="images/rassa_patodi.webp" alt="Patodi Rassa" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="badge" style="position: absolute; top: 15px; left: 15px; background: #e67e22; color: #fff; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;">Special</span>
-          </div>
-          <div style="padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; margin: 0; color: var(--primary);">Patodi Rassa</h3>
-              <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">₹180</span>
+          <div class="coverflow-card-container" data-index="2" data-src="images/thali5.jpeg" data-caption="Spicy Khandeshi Shev Bhaji">
+            <div class="coverflow-card">
+              <img src="images/thali5.jpeg" alt="Spicy Khandeshi Shev Bhaji" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Spicy Khandeshi Shev Bhaji</h3>
+                <p>Signature Black Spiced Gravy with Crispy Sev</p>
+              </div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Authentic spicy Patodi Rassa, Varan, Rice & Bhakri.</p>
-            <button class="primary-btn add-to-cart-btn" data-id="10" data-name="Rassa Patodi Thali" data-price="180" style="width: 100%; padding: 10px; border-radius: 8px;">Order Now</button>
           </div>
-        </div>
 
-        <div class="speciality-card" style="background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.3s ease;">
-          <div style="position: relative; overflow: hidden; height: 210px;">
-            <img src="images/khandeshithali.png" alt="Khandeshi Thali" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="badge" style="position: absolute; top: 15px; left: 15px; background: #27ae60; color: #fff; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;">Royal Royal</span>
-          </div>
-          <div style="padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; margin: 0; color: var(--primary);">Khandeshi Thali</h3>
-              <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">₹190</span>
+          <div class="coverflow-card-container" data-index="3" data-src="images/dudh-sev.jpg" data-caption="Rich Dudh Shev Bhaji">
+            <div class="coverflow-card">
+              <img src="images/dudh-sev.jpg" alt="Rich Dudh Shev Bhaji" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Rich Dudh Shev Bhaji</h3>
+                <p>Creamy Milk-Based Gravy with Authentic Spices</p>
+              </div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Bharit (1 Vaati), Veg Bhaji, Varan Rice & 2 Chapatis / Bhakri.</p>
-            <button class="primary-btn add-to-cart-btn" data-id="11" data-name="Unlimited Khandeshi Thali" data-price="299" style="width: 100%; padding: 10px; border-radius: 8px;">Order Now</button>
           </div>
-        </div>
 
+          <div class="coverflow-card-container" data-index="4" data-src="images/thali4.jpeg" data-caption="Khandeshi Patodi Rassa">
+            <div class="coverflow-card">
+              <img src="images/thali4.jpeg" alt="Khandeshi Patodi Rassa" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Khandeshi Patodi Rassa</h3>
+                <p>Gram Flour Patodi in Spicy Gravy with Bhakri</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="coverflow-card-container" data-index="5" data-src="images/thali2.jpeg" data-caption="Air Conditioned Family Dining">
+            <div class="coverflow-card">
+              <img src="images/thali2.jpeg" alt="Air Conditioned Family Dining" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Air Conditioned Family Dining</h3>
+                <p>Hygienic, Comfortable Family Atmosphere</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <button class="coverflow-nav right" id="coverflowNext" aria-label="Next Photo"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
+
     </div>
   </section>
 
@@ -1050,89 +1057,7 @@
     </div>
   </section>
 
-  <!--==================================
-  FOOD GALLERY WITH LIGHTBOX MODAL
-  ===================================-->
-  <section class="gallery section" id="gallery">
-    <div class="container">
 
-      <div class="section-heading">
-        <span>Food Gallery</span>
-        <h2>Every Dish Tells A Flavorful Story</h2>
-        <p>Click any photo to preview in high resolution.</p>
-      </div>
-
-      <!-- 3D Perspective Coverflow Carousel -->
-      <div class="coverflow-wrapper">
-        <button class="coverflow-nav left" id="coverflowPrev" aria-label="Previous Photo"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="coverflow-carousel" id="coverflowCarousel">
-          
-          <div class="coverflow-card-container" data-index="0" data-src="images/thali1.jpeg" data-caption="Special Khandeshi Thali Feast">
-            <div class="coverflow-card">
-              <img src="images/thali1.jpeg" alt="Special Khandeshi Thali Feast" loading="lazy">
-              <div class="coverflow-card-info">
-                <h3>Special Khandeshi Thali Feast</h3>
-                <p>Authentic 100% Pure Veg Royal Feast</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="coverflow-card-container" data-index="1" data-src="images/thali6.jpeg" data-caption="Authentic Bharit Puri">
-            <div class="coverflow-card">
-              <img src="images/thali6.jpeg" alt="Authentic Bharit Puri" loading="lazy">
-              <div class="coverflow-card-info">
-                <h3>Authentic Bharit Puri</h3>
-                <p>Khandeshi Brinjal Bharit with Soft Hot Puris</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="coverflow-card-container" data-index="2" data-src="images/thali5.jpeg" data-caption="Spicy Khandeshi Shev Bhaji">
-            <div class="coverflow-card">
-              <img src="images/thali5.jpeg" alt="Spicy Khandeshi Shev Bhaji" loading="lazy">
-              <div class="coverflow-card-info">
-                <h3>Spicy Khandeshi Shev Bhaji</h3>
-                <p>Signature Black Spiced Gravy with Crispy Sev</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="coverflow-card-container" data-index="3" data-src="images/dudh-sev.jpg" data-caption="Rich Dudh Shev Bhaji">
-            <div class="coverflow-card">
-              <img src="images/dudh-sev.jpg" alt="Rich Dudh Shev Bhaji" loading="lazy">
-              <div class="coverflow-card-info">
-                <h3>Rich Dudh Shev Bhaji</h3>
-                <p>Creamy Milk-Based Gravy with Authentic Spices</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="coverflow-card-container" data-index="4" data-src="images/thali4.jpeg" data-caption="Khandeshi Patodi Rassa">
-            <div class="coverflow-card">
-              <img src="images/thali4.jpeg" alt="Khandeshi Patodi Rassa" loading="lazy">
-              <div class="coverflow-card-info">
-                <h3>Khandeshi Patodi Rassa</h3>
-                <p>Gram Flour Patodi in Spicy Gravy with Bhakri</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="coverflow-card-container" data-index="5" data-src="images/thali2.jpeg" data-caption="Air Conditioned Family Dining">
-            <div class="coverflow-card">
-              <img src="images/thali2.jpeg" alt="Air Conditioned Family Dining" loading="lazy">
-              <div class="coverflow-card-info">
-                <h3>Air Conditioned Family Dining</h3>
-                <p>Hygienic, Comfortable Family Atmosphere</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <button class="coverflow-nav right" id="coverflowNext" aria-label="Next Photo"><i class="fa-solid fa-chevron-right"></i></button>
-      </div>
-
-    </div>
-  </section>
 
   <!--==================================
   EXPERIENCE BANNER
