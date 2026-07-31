@@ -721,15 +721,20 @@ function init3DCoverflow() {
   if (!containers.length) return;
 
   let activeIndex = 2; // Default centered active card
-  const MAX_VISIBILITY = 3;
+  const total = containers.length;
 
   function updateCoverflow() {
     containers.forEach((container, i) => {
-      const offset = (activeIndex - i) / 3;
-      const direction = Math.sign(activeIndex - i);
-      const absOffset = Math.abs(activeIndex - i) / 3;
+      // Calculate wrapped circular distance for infinite loop
+      let diff = i - activeIndex;
+      if (diff > total / 2) diff -= total;
+      if (diff < -total / 2) diff += total;
+
+      const offset = -diff / 3;
+      const direction = Math.sign(-diff);
+      const absOffset = Math.abs(diff) / 3;
       const isActive = i === activeIndex;
-      const absDiff = Math.abs(activeIndex - i);
+      const absDiff = Math.abs(diff);
 
       container.style.setProperty("--active", isActive ? 1 : 0);
       container.style.setProperty("--offset", offset);
@@ -737,7 +742,7 @@ function init3DCoverflow() {
       container.style.setProperty("--abs-offset", absOffset);
       container.style.setProperty("--pointer-events", isActive ? "auto" : "none");
 
-      if (absDiff >= MAX_VISIBILITY) {
+      if (absDiff > 2) {
         container.style.opacity = "0";
         container.style.display = "none";
       } else {
@@ -745,25 +750,22 @@ function init3DCoverflow() {
       }
     });
 
-    if (prevBtn) prevBtn.style.visibility = activeIndex > 0 ? "visible" : "hidden";
-    if (nextBtn) nextBtn.style.visibility = activeIndex < containers.length - 1 ? "visible" : "hidden";
+    // Keep navigation buttons visible for infinite loop
+    if (prevBtn) prevBtn.style.visibility = "visible";
+    if (nextBtn) nextBtn.style.visibility = "visible";
   }
 
   if (prevBtn) {
     prevBtn.addEventListener("click", () => {
-      if (activeIndex > 0) {
-        activeIndex--;
-        updateCoverflow();
-      }
+      activeIndex = (activeIndex - 1 + total) % total;
+      updateCoverflow();
     });
   }
 
   if (nextBtn) {
     nextBtn.addEventListener("click", () => {
-      if (activeIndex < containers.length - 1) {
-        activeIndex++;
-        updateCoverflow();
-      }
+      activeIndex = (activeIndex + 1) % total;
+      updateCoverflow();
     });
   }
 
@@ -771,7 +773,6 @@ function init3DCoverflow() {
   containers.forEach((container, i) => {
     container.addEventListener("click", () => {
       if (i === activeIndex) {
-        // Open lightbox
         const src = container.dataset.src;
         const caption = container.dataset.caption;
         if (typeof openImageModal === "function" && src) {
@@ -784,7 +785,7 @@ function init3DCoverflow() {
     });
   });
 
-  // Touch Swipe Support
+  // Touch Swipe Support with Infinite Loop
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -795,14 +796,31 @@ function init3DCoverflow() {
 
     wrapper.addEventListener("touchend", (e) => {
       touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 40 && activeIndex < containers.length - 1) {
-        activeIndex++;
+      if (touchStartX - touchEndX > 40) {
+        activeIndex = (activeIndex + 1) % total;
         updateCoverflow();
-      } else if (touchEndX - touchStartX > 40 && activeIndex > 0) {
-        activeIndex--;
+      } else if (touchEndX - touchStartX > 40) {
+        activeIndex = (activeIndex - 1 + total) % total;
         updateCoverflow();
       }
     }, { passive: true });
+  }
+
+  // Auto-play infinite rotation every 3.5 seconds
+  let autoPlayTimer = setInterval(() => {
+    activeIndex = (activeIndex + 1) % total;
+    updateCoverflow();
+  }, 3500);
+
+  if (wrapper) {
+    wrapper.addEventListener("mouseenter", () => clearInterval(autoPlayTimer));
+    wrapper.addEventListener("mouseleave", () => {
+      clearInterval(autoPlayTimer);
+      autoPlayTimer = setInterval(() => {
+        activeIndex = (activeIndex + 1) % total;
+        updateCoverflow();
+      }, 3500);
+    });
   }
 
   updateCoverflow();
