@@ -11,8 +11,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve Static Frontend Files
-app.use(express.static(path.join(__dirname, "public")));
+// Serve Static Frontend Files with no-cache headers for HTML
+app.use(express.static(path.join(__dirname, "public"), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".html")) {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    }
+  }
+}));
 
 // API Routes
 app.use("/api", require("./routes/public"));
