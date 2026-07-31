@@ -194,12 +194,13 @@ function initCounters() {
 
         const update = () => {
           current += increment;
+          const isFloat = target % 1 !== 0;
+          const suffix = target === 100 ? "%" : (isFloat ? "★" : "+");
           if (current < target) {
-            const isFloat = target % 1 !== 0;
-            counter.innerText = (isFloat ? current.toFixed(1) : Math.ceil(current)) + "+";
+            counter.innerText = (isFloat ? current.toFixed(1) : Math.ceil(current)) + suffix;
             setTimeout(update, 25);
           } else {
-            counter.innerText = target + "+";
+            counter.innerText = target + suffix;
           }
         };
         update();
