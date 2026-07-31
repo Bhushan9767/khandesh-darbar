@@ -334,24 +334,27 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .logo img {
-  width: 55px;
-  height: 55px;
+  width: 85px;
+  height: 85px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.12));
 }
 
 .logo h2 {
   font-family: "Playfair Display", serif;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
+  font-weight: 800;
   color: var(--primary);
   line-height: 1.2;
 }
 
 .logo span {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--text-muted);
   display: block;
 }
