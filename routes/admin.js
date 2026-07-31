@@ -102,17 +102,19 @@ router.put("/change-password", async (req, res) => {
       return res.status(400).json({ message: "Incorrect current password." });
     }
 
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const updateObj = { password: hashedPassword };
     if (newEmail && newEmail.trim()) {
-      admin.email = newEmail.trim().toLowerCase();
+      updateObj.email = newEmail.trim().toLowerCase();
     }
 
-    const salt = await bcrypt.genSalt(10);
-    admin.password = await bcrypt.hash(newPassword, salt);
+    await Admin.findByIdAndUpdate(req.admin.id, updateObj);
 
-    await admin.save();
-
-    res.json({ message: "Admin credentials updated successfully! Please log in again." });
+    res.json({ message: "Admin credentials updated successfully! Please log in again with your new password." });
   } catch (err) {
+    console.error("Change password error:", err);
     res.status(500).json({ message: "Error updating credentials", error: err.message });
   }
 });

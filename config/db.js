@@ -207,6 +207,18 @@ class LocalModel {
 
   _attachMethods(item) {
     if (!item) return null;
+    const model = this;
+    if (!item.save) {
+      item.save = async function() {
+        const items = readJSONFile(model.filename);
+        const index = items.findIndex(i => i && i._id === item._id);
+        if (index !== -1) {
+          items[index] = { ...item, updatedAt: new Date().toISOString() };
+          writeJSONFile(model.filename, items);
+        }
+        return item;
+      };
+    }
     // Add comparePassword function if this is an Admin model
     if (this.name === "Admin") {
       item.comparePassword = function(candidate) {
