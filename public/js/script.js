@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMenuSearchAndFilter();
   initGalleryLightbox();
   init3DCoverflow();
+  initInfiniteMobileScrolls();
   initFaqAccordion();
   initBookingForm();
   initNewsletterForm();
@@ -177,40 +178,39 @@ function initScrollReveal() {
         7. ANIMATED COUNTERS
 ====================================================*/
 function initCounters() {
-  const counters = document.querySelectorAll(".counter");
+  const counters = document.querySelectorAll(".counter, [data-target]");
   if (!counters.length) return;
 
   let animated = false;
-  const section = document.querySelector(".counter-section");
 
-  function checkCounterScroll() {
-    if (animated || !section) return;
-    const rect = section.getBoundingClientRect();
-    if (rect.top <= window.innerHeight - 100) {
-      animated = true;
-      counters.forEach(counter => {
-        const target = +counter.dataset.target;
-        let current = 0;
-        const increment = target / 60;
+  function runCounters() {
+    if (animated) return;
+    animated = true;
+    counters.forEach(counter => {
+      const targetStr = counter.dataset.target || counter.innerText;
+      const target = parseFloat(targetStr);
+      if (isNaN(target)) return;
 
-        const update = () => {
-          current += increment;
-          const isFloat = target % 1 !== 0;
-          const suffix = target === 100 ? "%" : (isFloat ? "★" : "+");
-          if (current < target) {
-            counter.innerText = (isFloat ? current.toFixed(1) : Math.ceil(current)) + suffix;
-            setTimeout(update, 25);
-          } else {
-            counter.innerText = target + suffix;
-          }
-        };
-        update();
-      });
-    }
+      let current = 0;
+      const increment = target / 35;
+      const isFloat = target % 1 !== 0;
+      const suffix = counter.dataset.suffix || (target === 100 ? "%" : (isFloat ? "★" : "+"));
+
+      const update = () => {
+        current += increment;
+        if (current < target) {
+          counter.innerText = (isFloat ? current.toFixed(1) : Math.ceil(current)) + suffix;
+          setTimeout(update, 30);
+        } else {
+          counter.innerText = (isFloat ? target.toFixed(1) : target) + suffix;
+        }
+      };
+      update();
+    });
   }
 
-  window.addEventListener("scroll", checkCounterScroll);
-  checkCounterScroll();
+  window.addEventListener("scroll", runCounters, { passive: true });
+  setTimeout(runCounters, 300);
 }
 
 /*====================================================
@@ -720,21 +720,19 @@ function init3DCoverflow() {
 
   if (!containers.length) return;
 
-  let activeIndex = 2; // Default centered active card
+  let activeIndex = 0;
   const total = containers.length;
 
   function updateCoverflow() {
     containers.forEach((container, i) => {
-      // Calculate wrapped circular distance for infinite loop
       let diff = i - activeIndex;
       if (diff > total / 2) diff -= total;
       if (diff < -total / 2) diff += total;
 
-      const offset = -diff / 3;
+      const offset = -diff / 2.2;
       const direction = Math.sign(-diff);
-      const absOffset = Math.abs(diff) / 3;
+      const absOffset = Math.abs(diff) / 2.2;
       const isActive = i === activeIndex;
-      const absDiff = Math.abs(diff);
 
       container.style.setProperty("--active", isActive ? 1 : 0);
       container.style.setProperty("--offset", offset);
@@ -742,34 +740,36 @@ function init3DCoverflow() {
       container.style.setProperty("--abs-offset", absOffset);
       container.style.setProperty("--pointer-events", isActive ? "auto" : "none");
 
-      if (absDiff > 2) {
+      if (Math.abs(diff) > 2) {
         container.style.opacity = "0";
-        container.style.display = "none";
+        container.style.visibility = "hidden";
+        container.style.pointerEvents = "none";
       } else {
-        container.style.display = "block";
+        container.style.opacity = "1";
+        container.style.visibility = "visible";
       }
     });
 
-    // Keep navigation buttons visible for infinite loop
     if (prevBtn) prevBtn.style.visibility = "visible";
     if (nextBtn) nextBtn.style.visibility = "visible";
   }
 
   if (prevBtn) {
-    prevBtn.addEventListener("click", () => {
+    prevBtn.addEventListener("click", (e) => {
+      e.preventDefault();
       activeIndex = (activeIndex - 1 + total) % total;
       updateCoverflow();
     });
   }
 
   if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
+    nextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
       activeIndex = (activeIndex + 1) % total;
       updateCoverflow();
     });
   }
 
-  // Click card to activate or open lightbox modal
   containers.forEach((container, i) => {
     container.addEventListener("click", () => {
       if (i === activeIndex) {
@@ -785,43 +785,66 @@ function init3DCoverflow() {
     });
   });
 
-  // Touch Swipe Support with Infinite Loop
+  // Touch Swipe Support
   let touchStartX = 0;
-  let touchEndX = 0;
-
   if (wrapper) {
     wrapper.addEventListener("touchstart", (e) => {
       touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
     wrapper.addEventListener("touchend", (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 40) {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 35) {
         activeIndex = (activeIndex + 1) % total;
         updateCoverflow();
-      } else if (touchEndX - touchStartX > 40) {
+      } else if (touchEndX - touchStartX > 35) {
         activeIndex = (activeIndex - 1 + total) % total;
         updateCoverflow();
       }
     }, { passive: true });
   }
 
-  // Auto-play infinite rotation every 3.5 seconds
-  let autoPlayTimer = setInterval(() => {
+  // Continuous Auto-play
+  setInterval(() => {
     activeIndex = (activeIndex + 1) % total;
     updateCoverflow();
-  }, 3500);
-
-  if (wrapper) {
-    wrapper.addEventListener("mouseenter", () => clearInterval(autoPlayTimer));
-    wrapper.addEventListener("mouseleave", () => {
-      clearInterval(autoPlayTimer);
-      autoPlayTimer = setInterval(() => {
-        activeIndex = (activeIndex + 1) % total;
-        updateCoverflow();
-      }, 3500);
-    });
-  }
+  }, 3200);
 
   updateCoverflow();
+}
+
+/*====================================================
+        18. INFINITE SEAMLESS SCROLL FOR MOBILE CONTAINERS
+====================================================*/
+function initInfiniteMobileScrolls() {
+  const scrollContainers = document.querySelectorAll(".category-grid, .why-grid, .facilities-grid, .review-grid");
+
+  scrollContainers.forEach(container => {
+    if (!container) return;
+
+    let isScrolling = false;
+    container.addEventListener("scroll", () => {
+      if (isScrolling) return;
+
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (maxScroll <= 0) return;
+
+      // Wrap smoothly to start when near end
+      if (container.scrollLeft >= maxScroll - 5) {
+        isScrolling = true;
+        setTimeout(() => {
+          container.scrollLeft = 5;
+          isScrolling = false;
+        }, 300);
+      }
+      // Wrap to end when near start going left
+      else if (container.scrollLeft <= 2) {
+        isScrolling = true;
+        setTimeout(() => {
+          container.scrollLeft = maxScroll - 10;
+          isScrolling = false;
+        }, 300);
+      }
+    }, { passive: true });
+  });
 }
