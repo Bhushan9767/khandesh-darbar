@@ -232,7 +232,7 @@ function initMenuSearchAndFilter() {
       const cardCategory = card.dataset.category || "";
       const cardName = (card.dataset.name || card.innerText).toLowerCase();
 
-      const matchesCategory = activeCategory === "all" || cardCategory === activeCategory;
+      const matchesCategory = activeCategory === "all" || cardCategory.includes(activeCategory);
       const matchesSearch = searchQuery === "" || cardName.includes(searchQuery);
 
       if (matchesCategory && matchesSearch) {

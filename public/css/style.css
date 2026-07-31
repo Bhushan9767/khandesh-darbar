@@ -2263,3 +2263,55 @@ footer ul li a:hover {
     transform: scale(0.97) !important;
   }
 }
+
+/*====================================================
+        MOBILE HEIGHT OPTIMIZATION & COMPACT LAYOUT
+====================================================*/
+@media screen and (max-width: 768px) {
+  .section {
+    padding: 35px 0 !important;
+  }
+
+  .section-heading,
+  .section-title {
+    margin-bottom: 22px !important;
+  }
+
+  .section-heading h2,
+  .section-title h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .menu-filter {
+    gap: 8px !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding-bottom: 8px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .menu-filter button {
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .why-grid,
+  .about-features,
+  .facilities-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .why-card,
+  .facility-card {
+    padding: 16px 12px !important;
+  }
+
+  .hero-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+}
