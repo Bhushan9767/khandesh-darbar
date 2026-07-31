@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCounters();
   initMenuSearchAndFilter();
   initGalleryLightbox();
+  init3DCoverflow();
   initFaqAccordion();
   initBookingForm();
   initNewsletterForm();
@@ -706,4 +707,103 @@ function showToast(message, type = "success", duration = 3500) {
       toast.remove();
     }, 350);
   }, duration);
+}
+
+/*====================================================
+        17. 3D PERSPECTIVE COVERFLOW CAROUSEL LOGIC
+====================================================*/
+function init3DCoverflow() {
+  const wrapper = document.querySelector(".coverflow-wrapper");
+  const containers = document.querySelectorAll(".coverflow-card-container");
+  const prevBtn = document.getElementById("coverflowPrev");
+  const nextBtn = document.getElementById("coverflowNext");
+
+  if (!containers.length) return;
+
+  let activeIndex = 2; // Default centered active card
+  const MAX_VISIBILITY = 3;
+
+  function updateCoverflow() {
+    containers.forEach((container, i) => {
+      const offset = (activeIndex - i) / 3;
+      const direction = Math.sign(activeIndex - i);
+      const absOffset = Math.abs(activeIndex - i) / 3;
+      const isActive = i === activeIndex;
+      const absDiff = Math.abs(activeIndex - i);
+
+      container.style.setProperty("--active", isActive ? 1 : 0);
+      container.style.setProperty("--offset", offset);
+      container.style.setProperty("--direction", direction);
+      container.style.setProperty("--abs-offset", absOffset);
+      container.style.setProperty("--pointer-events", isActive ? "auto" : "none");
+
+      if (absDiff >= MAX_VISIBILITY) {
+        container.style.opacity = "0";
+        container.style.display = "none";
+      } else {
+        container.style.display = "block";
+      }
+    });
+
+    if (prevBtn) prevBtn.style.visibility = activeIndex > 0 ? "visible" : "hidden";
+    if (nextBtn) nextBtn.style.visibility = activeIndex < containers.length - 1 ? "visible" : "hidden";
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      if (activeIndex > 0) {
+        activeIndex--;
+        updateCoverflow();
+      }
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      if (activeIndex < containers.length - 1) {
+        activeIndex++;
+        updateCoverflow();
+      }
+    });
+  }
+
+  // Click card to activate or open lightbox modal
+  containers.forEach((container, i) => {
+    container.addEventListener("click", () => {
+      if (i === activeIndex) {
+        // Open lightbox
+        const src = container.dataset.src;
+        const caption = container.dataset.caption;
+        if (typeof openImageModal === "function" && src) {
+          openImageModal(src, caption);
+        }
+      } else {
+        activeIndex = i;
+        updateCoverflow();
+      }
+    });
+  });
+
+  // Touch Swipe Support
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  if (wrapper) {
+    wrapper.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    wrapper.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 40 && activeIndex < containers.length - 1) {
+        activeIndex++;
+        updateCoverflow();
+      } else if (touchEndX - touchStartX > 40 && activeIndex > 0) {
+        activeIndex--;
+        updateCoverflow();
+      }
+    }, { passive: true });
+  }
+
+  updateCoverflow();
 }

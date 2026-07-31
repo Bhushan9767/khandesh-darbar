@@ -1065,38 +1065,73 @@
         <p>Click any photo to preview in high resolution.</p>
       </div>
 
-      <!-- Mobile Touch Swipe Hint Badge for Gallery -->
-      <div class="mobile-swipe-hint">
-        <i class="fa-solid fa-hand-pointer fa-bounce" style="--fa-animation-duration: 2s;"></i>
-        <span>Swipe photos left or right to explore gallery</span>
-        <i class="fa-solid fa-arrow-right-long"></i>
-      </div>
+      <!-- 3D Perspective Coverflow Carousel -->
+      <div class="coverflow-wrapper">
+        <button class="coverflow-nav left" id="coverflowPrev" aria-label="Previous Photo"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="coverflow-carousel" id="coverflowCarousel">
+          
+          <div class="coverflow-card-container" data-index="0" data-src="images/thali1.jpeg" data-caption="Special Khandeshi Thali Feast">
+            <div class="coverflow-card">
+              <img src="images/thali1.jpeg" alt="Special Khandeshi Thali Feast" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Special Khandeshi Thali Feast</h3>
+                <p>Authentic 100% Pure Veg Royal Feast</p>
+              </div>
+            </div>
+          </div>
 
-      <div class="gallery-grid" id="galleryGrid">
-        <div class="gallery-item large" data-src="images/thali1.jpeg" data-caption="Special Khandeshi Thali Feast">
-          <img src="images/thali1.jpeg" alt="Special Khandeshi Thali Feast" width="600" height="400" loading="lazy">
-          <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
+          <div class="coverflow-card-container" data-index="1" data-src="images/thali6.jpeg" data-caption="Authentic Bharit Puri">
+            <div class="coverflow-card">
+              <img src="images/thali6.jpeg" alt="Authentic Bharit Puri" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Authentic Bharit Puri</h3>
+                <p>Khandeshi Brinjal Bharit with Soft Hot Puris</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="coverflow-card-container" data-index="2" data-src="images/thali5.jpeg" data-caption="Spicy Khandeshi Shev Bhaji">
+            <div class="coverflow-card">
+              <img src="images/thali5.jpeg" alt="Spicy Khandeshi Shev Bhaji" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Spicy Khandeshi Shev Bhaji</h3>
+                <p>Signature Black Spiced Gravy with Crispy Sev</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="coverflow-card-container" data-index="3" data-src="images/dudh-sev.jpg" data-caption="Rich Dudh Shev Bhaji">
+            <div class="coverflow-card">
+              <img src="images/dudh-sev.jpg" alt="Rich Dudh Shev Bhaji" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Rich Dudh Shev Bhaji</h3>
+                <p>Creamy Milk-Based Gravy with Authentic Spices</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="coverflow-card-container" data-index="4" data-src="images/thali4.jpeg" data-caption="Khandeshi Patodi Rassa">
+            <div class="coverflow-card">
+              <img src="images/thali4.jpeg" alt="Khandeshi Patodi Rassa" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Khandeshi Patodi Rassa</h3>
+                <p>Gram Flour Patodi in Spicy Gravy with Bhakri</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="coverflow-card-container" data-index="5" data-src="images/thali2.jpeg" data-caption="Air Conditioned Family Dining">
+            <div class="coverflow-card">
+              <img src="images/thali2.jpeg" alt="Air Conditioned Family Dining" loading="lazy">
+              <div class="coverflow-card-info">
+                <h3>Air Conditioned Family Dining</h3>
+                <p>Hygienic, Comfortable Family Atmosphere</p>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="gallery-item" data-src="images/thali6.jpeg" data-caption="Authentic Bharit Bhakri">
-          <img src="images/thali6.jpeg" alt="Authentic Bharit Bhakri" width="300" height="230" loading="lazy">
-          <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
-        </div>
-        <div class="gallery-item" data-src="images/thali5.jpeg" data-caption="Spicy Khandeshi Shev Bhaji">
-          <img src="images/thali5.jpeg" alt="Spicy Khandeshi Shev Bhaji" width="300" height="230" loading="lazy">
-          <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
-        </div>
-        <div class="gallery-item" data-src="images/dudh-sev.jpg" data-caption="Rich Dudh Shev Bhaji">
-          <img src="images/dudh-sev.jpg" alt="Rich Dudh Shev Bhaji" width="300" height="230" loading="lazy">
-          <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
-        </div>
-        <div class="gallery-item wide" data-src="images/thali4.jpeg" data-caption="Khandeshi Varan Batti & Ghee">
-          <img src="images/thali4.jpeg" alt="Khandeshi Varan Batti & Ghee" width="600" height="230" loading="lazy">
-          <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
-        </div>
-        <div class="gallery-item" data-src="images/thali2.jpeg" data-caption="Air Conditioned Family Dining">
-          <img src="images/thali2.jpeg" alt="Air Conditioned Family Dining" width="300" height="230" loading="lazy">
-          <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
-        </div>
+        <button class="coverflow-nav right" id="coverflowNext" aria-label="Next Photo"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
     </div>
