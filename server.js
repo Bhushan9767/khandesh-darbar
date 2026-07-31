@@ -26,8 +26,9 @@ app.get("/robots.txt", (req, res) => {
   res.sendFile(path.join(__dirname, "public/robots.txt"));
 });
 
-// Serve Admin Panel Index explicitly if needed
-app.get("/admin", (req, res) => {
+// Serve Admin Panel Static Files & Fallback
+app.use("/admin", express.static(path.join(__dirname, "public/admin")));
+app.get("/admin*", (req, res) => {
   res.sendFile(path.join(__dirname, "public/admin/index.html"));
 });
 
