@@ -715,21 +715,28 @@ input:checked + .slider:before {
 }
 
 /*====================================================
-        RESPONSIVE & MOBILE DEVICE FRIENDLY STYLES
+        UNIVERSAL 6-TIER DEVICE RESPONSIVE SYSTEM
+        (280px Foldables -> 3840px 4K UltraWide Displays)
 ====================================================*/
+
 .mobile-menu-toggle-btn {
   display: none;
   background: var(--primary);
   color: white;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-sm);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.mobile-menu-toggle-btn:active {
+  transform: scale(0.94);
 }
 
 .mobile-sidebar-backdrop {
@@ -739,16 +746,60 @@ input:checked + .slider:before {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 998;
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 9998;
+  backdrop-filter: blur(4px);
 }
 
 .mobile-sidebar-backdrop.active {
   display: block;
 }
 
-/* TABLET & MOBILE BREAKPOINT (max-width: 992px) */
+/* ----------------------------------------------------
+   1. ULTRA-WIDE & 4K DESKTOP SCREENS (>= 1600px)
+---------------------------------------------------- */
+@media screen and (min-width: 1600px) {
+  .page-container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 30px 40px;
+  }
+  .metrics-grid,
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* ----------------------------------------------------
+   2. DESKTOP & LAPTOP COMPUTERS (1200px - 1599px)
+---------------------------------------------------- */
+@media screen and (min-width: 1200px) and (max-width: 1599px) {
+  .metrics-grid,
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* ----------------------------------------------------
+   3. MEDIUM TABLETS & COMPACT LAPTOPS (993px - 1199px)
+---------------------------------------------------- */
+@media screen and (min-width: 993px) and (max-width: 1199px) {
+  .sidebar {
+    width: 230px !important;
+  }
+  .main-content {
+    margin-left: 230px !important;
+    width: calc(100% - 230px) !important;
+  }
+  .metrics-grid,
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* ----------------------------------------------------
+   4. TABLETS & PORTRAIT IPADS (577px - 992px)
+---------------------------------------------------- */
 @media screen and (max-width: 992px) {
   .mobile-menu-toggle-btn {
     display: flex !important;
@@ -767,7 +818,7 @@ input:checked + .slider:before {
     z-index: 9999 !important;
     transform: translateX(-100%) !important;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 5px 0 25px rgba(0,0,0,0.3) !important;
+    box-shadow: 5px 0 30px rgba(0,0,0,0.35) !important;
   }
 
   .sidebar.mobile-open {
@@ -781,25 +832,27 @@ input:checked + .slider:before {
   }
 
   .top-bar {
-    padding: 12px 16px !important;
+    padding: 12px 18px !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 990 !important;
+    background: white !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
   }
 
   .top-bar h2 {
-    font-size: 1.1rem !important;
+    font-size: 1.15rem !important;
   }
 
   .page-container {
-    padding: 15px 12px !important;
+    padding: 18px 15px !important;
   }
 
   .metrics-grid,
   .card-grid,
   .kot-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+    gap: 15px !important;
   }
 
   .table-container {
@@ -807,35 +860,39 @@ input:checked + .slider:before {
     -webkit-overflow-scrolling: touch !important;
     width: 100% !important;
     display: block !important;
+    border-radius: var(--radius-lg);
   }
 
   table {
-    min-width: 600px !important;
+    min-width: 620px !important;
     width: 100% !important;
   }
 
   th, td {
-    padding: 10px 14px !important;
+    padding: 12px 16px !important;
     white-space: nowrap !important;
   }
 }
 
-/* MOBILE PHONES BREAKPOINT (max-width: 600px) */
-@media screen and (max-width: 600px) {
+/* ----------------------------------------------------
+   5. STANDARD SMARTPHONES (381px - 576px)
+---------------------------------------------------- */
+@media screen and (max-width: 576px) {
   .login-container {
     padding: 15px !important;
   }
 
   .login-card {
-    padding: 25px 18px !important;
+    padding: 28px 20px !important;
     max-width: 100% !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
   }
 
   .metrics-grid,
   .card-grid,
   .kot-grid {
     grid-template-columns: 1fr !important;
+    gap: 12px !important;
   }
 
   .user-profile span {
@@ -843,25 +900,25 @@ input:checked + .slider:before {
   }
 
   .top-bar h2 {
-    font-size: 0.95rem !important;
+    font-size: 1rem !important;
   }
 
   .modal-content {
     max-width: 95vw !important;
     margin: 10px !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
   }
 
   .modal-header {
-    padding: 14px 18px !important;
+    padding: 15px 18px !important;
   }
 
   .modal-body {
-    padding: 18px 14px !important;
+    padding: 18px 15px !important;
   }
 
   .modal-footer {
-    padding: 12px 14px !important;
+    padding: 14px;
     flex-direction: column-reverse !important;
     gap: 10px !important;
   }
@@ -887,8 +944,50 @@ input:checked + .slider:before {
   }
 
   .action-btn {
-    padding: 8px 12px !important;
-    font-size: 0.8rem !important;
-    min-height: 38px !important;
+    padding: 8px 14px !important;
+    font-size: 0.82rem !important;
+    min-height: 40px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* ----------------------------------------------------
+   6. ULTRA-SMALL FOLDABLE & BUDGET PHONES (<= 380px)
+---------------------------------------------------- */
+@media screen and (max-width: 380px) {
+  html {
+    font-size: 14px !important;
+  }
+
+  .sidebar {
+    width: 250px !important;
+  }
+
+  .top-bar {
+    padding: 10px 12px !important;
+  }
+
+  .top-bar h2 {
+    font-size: 0.9rem !important;
+  }
+
+  .page-container {
+    padding: 12px 8px !important;
+  }
+
+  .metric-card,
+  .card-box {
+    padding: 15px 12px !important;
+  }
+
+  .login-card {
+    padding: 22px 14px !important;
+  }
+
+  .action-btn {
+    width: 100% !important;
+    margin-bottom: 4px !important;
   }
 }
