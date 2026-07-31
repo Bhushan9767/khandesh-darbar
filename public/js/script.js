@@ -804,12 +804,6 @@ function init3DCoverflow() {
     }, { passive: true });
   }
 
-  // Slow & Relaxed Continuous Auto-play (5.0 Seconds)
-  setInterval(() => {
-    activeIndex = (activeIndex + 1) % total;
-    updateCoverflow();
-  }, 5000);
-
   updateCoverflow();
 }
 
