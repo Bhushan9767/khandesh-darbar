@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initMenuSearchAndFilter();
   initGalleryLightbox();
   init3DCoverflow();
-  initInfiniteMobileScrolls();
   initFaqAccordion();
   initBookingForm();
   initNewsletterForm();
@@ -808,41 +807,6 @@ function init3DCoverflow() {
   updateCoverflow();
 }
 
-/*====================================================
-        18. INFINITE SEAMLESS SCROLL FOR ALL MOBILE CONTAINERS
-====================================================*/
-function initInfiniteMobileScrolls() {
-  const scrollContainers = document.querySelectorAll(".category-grid, .why-grid, .facilities-grid, .review-grid, .menu-filter");
 
-  scrollContainers.forEach(container => {
-    if (!container) return;
-
-    let isScrolling = false;
-
-    container.addEventListener("scroll", () => {
-      if (isScrolling) return;
-
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      if (maxScroll <= 5) return;
-
-      // When reaching right end, wrap smoothly to start
-      if (container.scrollLeft >= maxScroll - 8) {
-        isScrolling = true;
-        setTimeout(() => {
-          container.scrollTo({ left: 10, behavior: "smooth" });
-          isScrolling = false;
-        }, 150);
-      }
-      // When reaching left end, wrap smoothly to end
-      else if (container.scrollLeft <= 5) {
-        isScrolling = true;
-        setTimeout(() => {
-          container.scrollTo({ left: maxScroll - 15, behavior: "smooth" });
-          isScrolling = false;
-        }, 150);
-      }
-    }, { passive: true });
-  });
-}
 
 
