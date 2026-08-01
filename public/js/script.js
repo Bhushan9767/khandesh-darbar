@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMenuSearchAndFilter();
   initGalleryLightbox();
   init3DCoverflow();
+  initSeamlessManualInfiniteScroll();
   initFaqAccordion();
   initBookingForm();
   initNewsletterForm();
@@ -805,6 +806,66 @@ function init3DCoverflow() {
   }
 
   updateCoverflow();
+}
+
+/*====================================================
+        18. SEAMLESS MANUAL INFINITE SCROLL (CLONE-BASED)
+        Allows 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 1 -> 2 -> 3...
+        100% Manual Swipe - ZERO Auto-play
+====================================================*/
+function initSeamlessManualInfiniteScroll() {
+  const scrollContainers = document.querySelectorAll(".review-grid, .why-grid, .facilities-grid, .category-grid");
+
+  scrollContainers.forEach(container => {
+    if (!container || container.dataset.infiniteInitialized) return;
+    container.dataset.infiniteInitialized = "true";
+
+    const originalItems = Array.from(container.children);
+    if (originalItems.length < 2) return;
+
+    // Clone items to form an infinite sequence (1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 1 -> 2 -> 3...)
+    originalItems.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      container.appendChild(clone);
+    });
+
+    let singleSetWidth = 0;
+
+    const calculateWidth = () => {
+      let width = 0;
+      originalItems.forEach(item => {
+        const style = window.getComputedStyle(item);
+        const margin = (parseFloat(style.marginLeft) || 0) + (parseFloat(style.marginRight) || 0);
+        width += item.offsetWidth + margin;
+      });
+      const containerStyle = window.getComputedStyle(container);
+      const gap = parseFloat(containerStyle.gap) || 0;
+      singleSetWidth = width + (originalItems.length * gap);
+    };
+
+    calculateWidth();
+    window.addEventListener("resize", calculateWidth, { passive: true });
+
+    let isAdjusting = false;
+
+    container.addEventListener("scroll", () => {
+      if (isAdjusting || singleSetWidth <= 0) return;
+
+      // Seamless infinite loop when manually scrolling right
+      if (container.scrollLeft >= singleSetWidth) {
+        isAdjusting = true;
+        container.scrollLeft -= singleSetWidth;
+        isAdjusting = false;
+      } 
+      // Seamless infinite loop when manually scrolling left
+      else if (container.scrollLeft <= 0) {
+        isAdjusting = true;
+        container.scrollLeft += singleSetWidth;
+        isAdjusting = false;
+      }
+    }, { passive: true });
+  });
 }
 
 
