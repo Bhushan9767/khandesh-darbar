@@ -1115,97 +1115,83 @@
         </div>
       </div>
 
-      <!-- 3D Perspective Coverflow Carousel for Reviews -->
-      <div class="coverflow-wrapper review-coverflow-wrapper">
-        <button class="coverflow-nav left" id="reviewPrev" aria-label="Previous Review"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="coverflow-carousel" id="reviewCoverflowCarousel">
-          
-          <div class="review-coverflow-card-container" data-index="0">
-            <div class="review-card coverflow-card">
-              <div class="review-top">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div>
-                  <h4>राहुल पाटील (Rahul Patil)</h4>
-                  <span>Local Guide · Sangli 100 Feet Rd</span>
-                </div>
+      <!-- Customer Reviews Grid with Manual Endless Loop Swipe -->
+      <div class="review-carousel-wrapper">
+        <div class="review-grid" id="reviewGrid">
+
+          <div class="review-card" data-aos="fade-up">
+            <div class="review-top">
+              <div class="avatar"><i class="fa-solid fa-user"></i></div>
+              <div>
+                <h4>राहुल पाटील (Rahul Patil)</h4>
+                <span>Local Guide · Sangli 100 Feet Rd</span>
               </div>
-              <div class="stars">★★★★★</div>
-              <p>"वरण बट्टी आणि वांग्याच्या भरताची चव एकदम अस्सल खानदेशी आहे! सर्व्हिस खूप जलद आणि तत्पर आहे. 100% प्युअर व्हेज जेवणासाठी सर्वोत्तम ठिकाण."</p>
             </div>
+            <div class="stars">★★★★★</div>
+            <p>"वरण बट्टी आणि वांग्याच्या भरताची चव एकदम अस्सल खानदेशी आहे! सर्व्हिस खूप जलद आणि तत्पर आहे. 100% प्युअर व्हेज जेवणासाठी सर्वोत्तम ठिकाण."</p>
           </div>
 
-          <div class="review-coverflow-card-container" data-index="1">
-            <div class="review-card coverflow-card">
-              <div class="review-top">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div>
-                  <h4>प्रसाद एम. (Prasad M.)</h4>
-                  <span>Google Reviewer · Sangli</span>
-                </div>
+          <div class="review-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="review-top">
+              <div class="avatar"><i class="fa-solid fa-user"></i></div>
+              <div>
+                <h4>प्रसाद एम. (Prasad M.)</h4>
+                <span>Google Reviewer · Sangli</span>
               </div>
-              <div class="stars">★★★★★</div>
-              <p>"सांगलीतील सर्वोत्तम शाकाहारी हॉटेल! खानदेशी भरीत पुरी आणि शेव भाजी खूपच स्वादिष्ट होती. स्वच्छता आणि वातावरण १ नंबर आहे."</p>
             </div>
+            <div class="stars">★★★★★</div>
+            <p>"सांगलीतील सर्वोत्तम शाकाहारी हॉटेल! खानदेशी भरीत पुरी आणि शेव भाजी खूपच स्वादिष्ट होती. स्वच्छता आणि वातावरण १ नंबर आहे."</p>
           </div>
 
-          <div class="review-coverflow-card-container" data-index="2">
-            <div class="review-card coverflow-card">
-              <div class="review-top">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div>
-                  <h4>अक्षय कुलकर्णी (Akshay Kulkarni)</h4>
-                  <span>Visitor from Kolhapur</span>
-                </div>
+          <div class="review-card" data-aos="fade-up" data-aos-delay="150">
+            <div class="review-top">
+              <div class="avatar"><i class="fa-solid fa-user"></i></div>
+              <div>
+                <h4>अक्षय कुलकर्णी (Akshay Kulkarni)</h4>
+                <span>Visitor from Kolhapur</span>
               </div>
-              <div class="stars">★★★★☆</div>
-              <p>"Authentic home-cooked spice taste. Varan Batti with pure cow ghee was mouth-watering. Weekend dinner rush madhye thoda vel lagto, pan food quality 100% best aahe!"</p>
             </div>
+            <div class="stars">★★★★☆</div>
+            <p>"Authentic home-cooked spice taste. Varan Batti with pure cow ghee was mouth-watering. Weekend dinner rush madhye thoda vel lagto, pan food quality 100% best aahe!"</p>
           </div>
 
-          <div class="review-coverflow-card-container" data-index="3">
-            <div class="review-card coverflow-card">
-              <div class="review-top">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div>
-                  <h4>पूजा शहा (Pooja Shah)</h4>
-                  <span>Family Diner · Sangli</span>
-                </div>
+          <div class="review-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="review-top">
+              <div class="avatar"><i class="fa-solid fa-user"></i></div>
+              <div>
+                <h4>पूजा शहा (Pooja Shah)</h4>
+                <span>Family Diner · Sangli</span>
               </div>
-              <div class="stars">★★★★★</div>
-              <p>"100% Pure Veg kitchen, AC Family dining hall, and very fast polite table service. Shrikhand and Patodi Rassa are outstanding."</p>
             </div>
+            <div class="stars">★★★★★</div>
+            <p>"100% Pure Veg kitchen, AC Family dining hall, and very fast polite table service. Shrikhand and Patodi Rassa are outstanding."</p>
           </div>
 
-          <div class="review-coverflow-card-container" data-index="4">
-            <div class="review-card coverflow-card">
-              <div class="review-top">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div>
-                  <h4>सचिन देशमुख (Sachin Deshmukh)</h4>
-                  <span>Regular Customer · Kupwad</span>
-                </div>
+          <div class="review-card" data-aos="fade-up" data-aos-delay="250">
+            <div class="review-top">
+              <div class="avatar"><i class="fa-solid fa-user"></i></div>
+              <div>
+                <h4>सचिन देशमुख (Sachin Deshmukh)</h4>
+                <span>Regular Customer · Kupwad</span>
               </div>
-              <div class="stars">★★★★★</div>
-              <p>"दररोज ताजे पिठलं-भाकरी, सुका चवळी रस्सा आणि दराबा लाडू! १०० फूट रोडवरील सांगलीतील नंबर १ खानदेशी हॉटेल."</p>
             </div>
+            <div class="stars">★★★★★</div>
+            <p>"दररोज ताजे पिठलं-भाकरी, सुका चवळी रस्सा आणि दराबा लाडू! १०० फूट रोडवरील सांगलीतील नंबर १ खानदेशी हॉटेल."</p>
           </div>
 
-          <div class="review-coverflow-card-container" data-index="5">
-            <div class="review-card coverflow-card">
-              <div class="review-top">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div>
-                  <h4>विक्रम शिंदे (Vikram Shinde)</h4>
-                  <span>Takeaway Customer</span>
-                </div>
+          <div class="review-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="review-top">
+              <div class="avatar"><i class="fa-solid fa-user"></i></div>
+              <div>
+                <h4>विक्रम शिंदे (Vikram Shinde)</h4>
+                <span>Takeaway Customer</span>
               </div>
-              <div class="stars">★★★★☆</div>
-              <p>"पार्सल सर्व्हिस खूप फास्ट आणि व्यवस्थित पॅकिंगसह मिळते. गरम चपात्या आणि चवदार शेव भाजी घरपोच मिळते."</p>
             </div>
+            <div class="stars">★★★★☆</div>
+            <p>"पार्सल सर्व्हिस खूप फास्ट आणि व्यवस्थित पॅकिंगसह मिळते. गरम चपात्या आणि चवदार शेव भाजी घरपोच मिळते."</p>
           </div>
 
         </div>
-        <button class="coverflow-nav right" id="reviewNext" aria-label="Next Review"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
       <div class="review-btn" style="text-align: center; margin-top: 30px;">
