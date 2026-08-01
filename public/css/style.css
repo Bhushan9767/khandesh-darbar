@@ -1349,6 +1349,24 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   gap: 28px;
 }
 
+.slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 5px 25px 5px;
+}
+
+.slider::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  flex: 0 0 320px;
+}
+
 .review-card {
   background: var(--card-bg);
   padding: 30px;

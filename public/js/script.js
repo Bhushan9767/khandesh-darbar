@@ -14,8 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMenuSearchAndFilter();
   initGalleryLightbox();
   init3DCoverflow();
-  initManualReviewSlider();
-  initSeamlessManualInfiniteScroll();
+  initInfiniteManualSlider();
   initFaqAccordion();
   initBookingForm();
   initNewsletterForm();
@@ -810,166 +809,26 @@ function init3DCoverflow() {
 }
 
 /*====================================================
-        18. SEAMLESS MANUAL INFINITE SCROLL (CLONE-BASED)
-        Allows 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 1 -> 2 -> 3...
-        100% Manual Swipe - ZERO Auto-play
+        18. INFINITE MANUAL CAROUSEL (USER PROVIDED LOGIC)
+        Zero Auto-scroll, Seamless Scroll Wrap (scrollLeft -= half)
 ====================================================*/
-function initSeamlessManualInfiniteScroll() {
-  const scrollContainers = document.querySelectorAll(".review-grid, .why-grid, .facilities-grid, .category-grid");
+function initInfiniteManualSlider() {
+  const sliders = document.querySelectorAll(".slider");
 
-  scrollContainers.forEach(container => {
-    if (!container || container.dataset.infiniteInitialized) return;
-    container.dataset.infiniteInitialized = "true";
+  sliders.forEach(slider => {
+    if (!slider || slider.dataset.initialized) return;
+    slider.dataset.initialized = "true";
 
-    const originalItems = Array.from(container.children);
-    if (originalItems.length < 2) return;
+    slider.addEventListener("scroll", () => {
+      const half = slider.scrollWidth / 2;
 
-    // Clone items to form an infinite sequence (1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 1 -> 2 -> 3...)
-    originalItems.forEach(item => {
-      const clone = item.cloneNode(true);
-      clone.setAttribute("aria-hidden", "true");
-      container.appendChild(clone);
-    });
-
-    let singleSetWidth = 0;
-
-    const calculateWidth = () => {
-      let width = 0;
-      originalItems.forEach(item => {
-        const style = window.getComputedStyle(item);
-        const margin = (parseFloat(style.marginLeft) || 0) + (parseFloat(style.marginRight) || 0);
-        width += item.offsetWidth + margin;
-      });
-      const containerStyle = window.getComputedStyle(container);
-      const gap = parseFloat(containerStyle.gap) || 0;
-      singleSetWidth = width + (originalItems.length * gap);
-    };
-
-    calculateWidth();
-    window.addEventListener("resize", calculateWidth, { passive: true });
-
-    let isAdjusting = false;
-
-    container.addEventListener("scroll", () => {
-      if (isAdjusting || singleSetWidth <= 0) return;
-
-      // Seamless infinite loop when manually scrolling right
-      if (container.scrollLeft >= singleSetWidth) {
-        isAdjusting = true;
-        container.scrollLeft -= singleSetWidth;
-        isAdjusting = false;
-      } 
-      // Seamless infinite loop when manually scrolling left
-      else if (container.scrollLeft <= 0) {
-        isAdjusting = true;
-        container.scrollLeft += singleSetWidth;
-        isAdjusting = false;
+      if (slider.scrollLeft >= half) {
+        slider.scrollLeft -= half;
+      } else if (slider.scrollLeft <= 0) {
+        slider.scrollLeft += half;
       }
     }, { passive: true });
   });
-}
-
-/*====================================================
-        19. SEAMLESS INFINITE FORWARD MANUAL REVIEW SLIDER
-        Moves Forward 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 1 -> 2...
-        Zero Reverse Rewinding - 100% Manual Only
-====================================================*/
-function initManualReviewSlider() {
-  const track = document.getElementById("reviewGridTrack");
-  const wrapper = document.querySelector(".review-carousel-wrapper");
-  const prevBtn = document.getElementById("reviewPrev");
-  const nextBtn = document.getElementById("reviewNext");
-
-  if (!track) return;
-
-  const originalSlides = Array.from(track.children);
-  if (originalSlides.length < 2) return;
-  const numOriginal = originalSlides.length;
-
-  // Clone all slides and append to the track so slide 1 appears right after slide 6
-  originalSlides.forEach(slide => {
-    const clone = slide.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    track.appendChild(clone);
-  });
-
-  let currentIndex = 0;
-  let isTransitioning = false;
-
-  function moveToSlide(index, animated = true) {
-    if (animated) {
-      track.style.transition = "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)";
-    } else {
-      track.style.transition = "none";
-    }
-    track.style.transform = `translateX(-${index * 100}%)`;
-  }
-
-  function handleNext() {
-    if (isTransitioning) return;
-    isTransitioning = true;
-    currentIndex++;
-    moveToSlide(currentIndex, true);
-  }
-
-  function handlePrev() {
-    if (isTransitioning) return;
-    if (currentIndex === 0) {
-      moveToSlide(numOriginal, false);
-      track.offsetHeight; // force reflow
-      currentIndex = numOriginal - 1;
-      setTimeout(() => {
-        isTransitioning = true;
-        moveToSlide(currentIndex, true);
-      }, 20);
-    } else {
-      isTransitioning = true;
-      currentIndex--;
-      moveToSlide(currentIndex, true);
-    }
-  }
-
-  track.addEventListener("transitionend", () => {
-    isTransitioning = false;
-    // When we reach slide 6 (which is slide 1 clone right next to slide 6), seamlessly reset to slide 0
-    if (currentIndex >= numOriginal) {
-      currentIndex = 0;
-      moveToSlide(0, false);
-    }
-  });
-
-  if (nextBtn) {
-    nextBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      handleNext();
-    });
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      handlePrev();
-    });
-  }
-
-  // Touch Swipe Support
-  let touchStartX = 0;
-  if (wrapper) {
-    wrapper.addEventListener("touchstart", (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    wrapper.addEventListener("touchend", (e) => {
-      const touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 35) {
-        handleNext();
-      } else if (touchEndX - touchStartX > 35) {
-        handlePrev();
-      }
-    }, { passive: true });
-  }
-
-  moveToSlide(0, false);
 }
 
 
