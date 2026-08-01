@@ -870,37 +870,85 @@ function initSeamlessManualInfiniteScroll() {
 }
 
 /*====================================================
-        19. INDEX-BASED MANUAL REVIEW SLIDER (NO AUTO SCROLL)
+        19. SEAMLESS INFINITE FORWARD MANUAL REVIEW SLIDER
+        Moves Forward 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 1 -> 2...
+        Zero Reverse Rewinding - 100% Manual Only
 ====================================================*/
 function initManualReviewSlider() {
   const track = document.getElementById("reviewGridTrack");
-  const slides = document.querySelectorAll(".review-card-slide");
+  const wrapper = document.querySelector(".review-carousel-wrapper");
   const prevBtn = document.getElementById("reviewPrev");
   const nextBtn = document.getElementById("reviewNext");
-  const wrapper = document.querySelector(".review-carousel-wrapper");
 
-  if (!track || !slides.length) return;
+  if (!track) return;
 
-  let activeIndex = 0;
-  const total = slides.length;
+  const originalSlides = Array.from(track.children);
+  if (originalSlides.length < 2) return;
+  const numOriginal = originalSlides.length;
 
-  function updateReviewSlider() {
-    track.style.transform = `translateX(-${activeIndex * 100}%)`;
+  // Clone all slides and append to the track so slide 1 appears right after slide 6
+  originalSlides.forEach(slide => {
+    const clone = slide.cloneNode(true);
+    clone.setAttribute("aria-hidden", "true");
+    track.appendChild(clone);
+  });
+
+  let currentIndex = 0;
+  let isTransitioning = false;
+
+  function moveToSlide(index, animated = true) {
+    if (animated) {
+      track.style.transition = "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)";
+    } else {
+      track.style.transition = "none";
+    }
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  function handleNext() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    currentIndex++;
+    moveToSlide(currentIndex, true);
+  }
+
+  function handlePrev() {
+    if (isTransitioning) return;
+    if (currentIndex === 0) {
+      moveToSlide(numOriginal, false);
+      track.offsetHeight; // force reflow
+      currentIndex = numOriginal - 1;
+      setTimeout(() => {
+        isTransitioning = true;
+        moveToSlide(currentIndex, true);
+      }, 20);
+    } else {
+      isTransitioning = true;
+      currentIndex--;
+      moveToSlide(currentIndex, true);
+    }
+  }
+
+  track.addEventListener("transitionend", () => {
+    isTransitioning = false;
+    // When we reach slide 6 (which is slide 1 clone right next to slide 6), seamlessly reset to slide 0
+    if (currentIndex >= numOriginal) {
+      currentIndex = 0;
+      moveToSlide(0, false);
+    }
+  });
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      handleNext();
+    });
   }
 
   if (prevBtn) {
     prevBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      activeIndex = (activeIndex - 1 + total) % total;
-      updateReviewSlider();
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      activeIndex = (activeIndex + 1) % total;
-      updateReviewSlider();
+      handlePrev();
     });
   }
 
@@ -914,16 +962,14 @@ function initManualReviewSlider() {
     wrapper.addEventListener("touchend", (e) => {
       const touchEndX = e.changedTouches[0].screenX;
       if (touchStartX - touchEndX > 35) {
-        activeIndex = (activeIndex + 1) % total;
-        updateReviewSlider();
+        handleNext();
       } else if (touchEndX - touchStartX > 35) {
-        activeIndex = (activeIndex - 1 + total) % total;
-        updateReviewSlider();
+        handlePrev();
       }
     }, { passive: true });
   }
 
-  updateReviewSlider();
+  moveToSlide(0, false);
 }
 
 
