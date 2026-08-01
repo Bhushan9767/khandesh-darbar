@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMenuSearchAndFilter();
   initGalleryLightbox();
   init3DCoverflow();
+  initReview3DCoverflow();
   initInfiniteMobileScrolls();
   initFaqAccordion();
   initBookingForm();
@@ -842,4 +843,96 @@ function initInfiniteMobileScrolls() {
       }
     }, { passive: true });
   });
+}
+
+/*====================================================
+        19. 3D PERSPECTIVE COVERFLOW FOR REVIEWS
+====================================================*/
+function initReview3DCoverflow() {
+  const wrapper = document.querySelector(".review-coverflow-wrapper");
+  const containers = document.querySelectorAll(".review-coverflow-card-container");
+  const prevBtn = document.getElementById("reviewPrev");
+  const nextBtn = document.getElementById("reviewNext");
+
+  if (!containers.length) return;
+
+  let activeIndex = 0;
+  const total = containers.length;
+
+  function updateReviewCoverflow() {
+    containers.forEach((container, i) => {
+      let diff = i - activeIndex;
+      if (diff > total / 2) diff -= total;
+      if (diff < -total / 2) diff += total;
+
+      const offset = -diff / 2.2;
+      const direction = Math.sign(-diff);
+      const absOffset = Math.abs(diff) / 2.2;
+      const isActive = i === activeIndex;
+
+      container.style.setProperty("--active", isActive ? 1 : 0);
+      container.style.setProperty("--offset", offset);
+      container.style.setProperty("--direction", direction);
+      container.style.setProperty("--abs-offset", absOffset);
+      container.style.setProperty("--pointer-events", isActive ? "auto" : "none");
+
+      if (Math.abs(diff) > 2) {
+        container.style.opacity = "0";
+        container.style.visibility = "hidden";
+        container.style.pointerEvents = "none";
+      } else {
+        container.style.opacity = "1";
+        container.style.visibility = "visible";
+      }
+    });
+
+    if (prevBtn) prevBtn.style.visibility = "visible";
+    if (nextBtn) nextBtn.style.visibility = "visible";
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + total) % total;
+      updateReviewCoverflow();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % total;
+      updateReviewCoverflow();
+    });
+  }
+
+  containers.forEach((container, i) => {
+    container.addEventListener("click", () => {
+      if (i !== activeIndex) {
+        activeIndex = i;
+        updateReviewCoverflow();
+      }
+    });
+  });
+
+  // Touch Swipe Support
+  let touchStartX = 0;
+  if (wrapper) {
+    wrapper.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    wrapper.addEventListener("touchend", (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 35) {
+        activeIndex = (activeIndex + 1) % total;
+        updateReviewCoverflow();
+      } else if (touchEndX - touchStartX > 35) {
+        activeIndex = (activeIndex - 1 + total) % total;
+        updateReviewCoverflow();
+      }
+    }, { passive: true });
+  }
+
+  updateReviewCoverflow();
 }

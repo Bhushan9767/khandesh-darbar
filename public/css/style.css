@@ -2465,7 +2465,8 @@ footer ul li a:hover {
   transform-style: preserve-3d;
 }
 
-.coverflow-card-container {
+.coverflow-card-container,
+.review-coverflow-card-container {
   position: absolute;
   top: 0;
   left: 0;
