@@ -194,15 +194,16 @@ function initCounters() {
       let current = 0;
       const increment = target / 35;
       const isFloat = target % 1 !== 0;
+      const prefix = counter.dataset.prefix || "";
       const suffix = counter.dataset.suffix || (target === 100 ? "%" : (isFloat ? "★" : "+"));
 
       const update = () => {
         current += increment;
         if (current < target) {
-          counter.innerText = (isFloat ? current.toFixed(1) : Math.ceil(current)) + suffix;
+          counter.innerText = prefix + (isFloat ? current.toFixed(1) : Math.ceil(current)) + suffix;
           setTimeout(update, 30);
         } else {
-          counter.innerText = (isFloat ? target.toFixed(1) : target) + suffix;
+          counter.innerText = prefix + (isFloat ? target.toFixed(1) : target) + suffix;
         }
       };
       update();
