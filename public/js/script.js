@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMenuSearchAndFilter();
   initGalleryLightbox();
   init3DCoverflow();
+  initManualReviewSlider();
   initSeamlessManualInfiniteScroll();
   initFaqAccordion();
   initBookingForm();
@@ -866,6 +867,63 @@ function initSeamlessManualInfiniteScroll() {
       }
     }, { passive: true });
   });
+}
+
+/*====================================================
+        19. INDEX-BASED MANUAL REVIEW SLIDER (NO AUTO SCROLL)
+====================================================*/
+function initManualReviewSlider() {
+  const track = document.getElementById("reviewGridTrack");
+  const slides = document.querySelectorAll(".review-card-slide");
+  const prevBtn = document.getElementById("reviewPrev");
+  const nextBtn = document.getElementById("reviewNext");
+  const wrapper = document.querySelector(".review-carousel-wrapper");
+
+  if (!track || !slides.length) return;
+
+  let activeIndex = 0;
+  const total = slides.length;
+
+  function updateReviewSlider() {
+    track.style.transform = `translateX(-${activeIndex * 100}%)`;
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + total) % total;
+      updateReviewSlider();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % total;
+      updateReviewSlider();
+    });
+  }
+
+  // Touch Swipe Support
+  let touchStartX = 0;
+  if (wrapper) {
+    wrapper.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    wrapper.addEventListener("touchend", (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 35) {
+        activeIndex = (activeIndex + 1) % total;
+        updateReviewSlider();
+      } else if (touchEndX - touchStartX > 35) {
+        activeIndex = (activeIndex - 1 + total) % total;
+        updateReviewSlider();
+      }
+    }, { passive: true });
+  }
+
+  updateReviewSlider();
 }
 
 
