@@ -1,0 +1,24 @@
+{
+  "name": "Hotel Khandesh Darbar Sangli",
+  "short_name": "Khandesh Darbar",
+  "description": "Best Pure Veg Khandeshi & Maharashtrian Family Restaurant in Sangli. Unlimited Thalis, Bharit Bhakri, Shev Bhaji & Varan Batti.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#a52a2a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "images/logo-clean.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo-clean.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

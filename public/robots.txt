@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
-Disallow: /admin
+Disallow: /admin/
 Disallow: /api/admin/
+Disallow: *.pdf
 
-Sitemap: https://khandesh-darbar.onrender.com/sitemap.xml
+# Host & Sitemaps
+Host: https://khandeshdarbar.in
+Sitemap: https://khandeshdarbar.in/sitemap.xml
+Sitemap: https://hotelkhandeshdarbar.netlify.app/sitemap.xml
